@@ -4,6 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Holiday Job</title>
+  <script>
+    if (localStorage.getItem('hjsLoggedIn') !== 'true') {
+      window.location.replace('LoginHJS.html');
+    }
+  </script>
 
   <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -129,7 +134,7 @@
 
     <div class="col-md-4">
       <div class="card menu-card">
-        <img src="govt.avif" class="card-img-top">
+        <img src="Bungoma County Offices.jpg" class="card-img-top">
         <div class="card-body text-center">
           <h5>Bungoma County Offices</h5>
           <p>04/04/2026 - 14/04/2026</p>
@@ -140,7 +145,7 @@
 
     <div class="col-md-4">
       <div class="card menu-card">
-        <img src="hsp.jpg" class="card-img-top">
+        <img src="KNH.jpg" class="card-img-top">
         <div class="card-body text-center">
           <h5>Kenyatta Hospital</h5>
           <p>04/04/2026 - 14/04/2026</p>
@@ -150,7 +155,7 @@
     </div>
     <div class="col-md-4">
       <div class="card menu-card">
-        <img src="court.jpg" class="card-img-top">
+        <img src="Milimani Law Courts.jpg" class="card-img-top">
         <div class="card-body text-center">
           <h5>Milimani Law Courts</h5>
           <p>04/04/2026 - 14/04/2026</p>
@@ -160,7 +165,7 @@
     </div>
     <div class="col-md-4">
       <div class="card menu-card">
-        <img src="govt.avif" class="card-img-top">
+        <img src="Siaya County Offices.jpg" class="card-img-top">
         <div class="card-body text-center">
           <h5>Siaya County Offices</h5>
           <p>04/04/2026 - 14/04/2026</p>
@@ -170,9 +175,9 @@
     </div>
     <div class="col-md-4">
       <div class="card menu-card">
-        <img src="hsp.jpg" class="card-img-top">
+        <img src="KCMH.jpg" class="card-img-top">
         <div class="card-body text-center">
-          <h5>Kajiado towm Mission Hospital</h5>
+          <h5>Kajiado County Mission Hospital</h5>
           <p>04/04/2026 - 14/04/2026</p>
           <button class="btn btn-info">Enroll</button>
         </div>
@@ -181,7 +186,7 @@
 
     <div class="col-md-4">
       <div class="card menu-card">
-        <img src="court.jpg" class="card-img-top">
+        <img src="Parliament.jpg" class="card-img-top">
         <div class="card-body text-center">
           <h5>Parliament Of Kenya</h5>
           <p>04/04/2026 - 14/04/2026</p>
@@ -192,9 +197,9 @@
 
     <div class="col-md-4">
       <div class="card menu-card">
-        <img src="govt.avif" class="card-img-top">
+        <img src="Archives.jpg" class="card-img-top">
         <div class="card-body text-center">
-          <h5>National Archieves</h5>
+          <h5>National Archives</h5>
           <p>04/04/2026 - 14/04/2026</p>
           <button class="btn btn-info">Enroll</button>
         </div>
@@ -203,7 +208,7 @@
 
     <div class="col-md-4">
       <div class="card menu-card">
-        <img src="govt.avif" class="card-img-top">
+        <img src="Garissa County.jpg" class="card-img-top">
         <div class="card-body text-center">
           <h5>Garissa County Goverment Offices</h5>
           <p>04/04/2026 - 14/04/2026</p>
@@ -214,7 +219,7 @@
     
     <div class="col-md-4">
       <div class="card menu-card">
-        <img src="airport.avif" class="card-img-top">
+        <img src="wilson airrport.jpg" class="card-img-top">
         <div class="card-body text-center">
           <h5>Wilson Airport</h5>
           <p>04/04/2026 - 14/04/2026</p>
@@ -225,7 +230,7 @@
     
     <div class="col-md-4">
       <div class="card menu-card">
-        <img src="court.jpg" class="card-img-top">
+        <img src="kisumu.jpg" class="card-img-top">
         <div class="card-body text-center">
           <h5>Kisumu County Law Court</h5>
           <p>04/04/2026 - 14/04/2026</p>
@@ -236,7 +241,7 @@
     
     <div class="col-md-4">
       <div class="card menu-card">
-        <img src="library.jpg" class="card-img-top">
+        <img src="National library.jpg" class="card-img-top">
         <div class="card-body text-center">
           <h5>National Library</h5>
           <p>04/04/2026 - 14/04/2026</p>
@@ -247,7 +252,7 @@
     
     <div class="col-md-4">
       <div class="card menu-card">
-        <img src="kws.png" class="card-img-top">
+        <img src="KWS.jpg" class="card-img-top">
         <div class="card-body text-center">
           <h5>Kenya Wild LIfe Offices</h5>
           <p>04/04/2026 - 14/04/2026</p>
@@ -289,12 +294,12 @@
     <!-- Contact -->
     <div id="contacts">
       <h5>Contact</h5>
-      <p><i class="fas fa-envelope"></i> stareheboyscentre@gmail.com</p>
+      <p><i class="fas fa-envelope"></i>info@stareheboyscentre.ac.ke </p>
       <p><i class="fas fa-phone"></i> +254 790 537 227</p>
       <p><i class="fas fa-map-marker-alt"></i> Nairobi, Kenya</p>
 
       <!-- WhatsApp Button -->
-      <a href="https://wa.me/254700000000" target="_blank" class="btn btn-success mt-2">
+      <a href="https://wa.me/254727531001" target="_blank" class="btn btn-success mt-2">
         <i class="fab fa-whatsapp"></i> Reach Out via WhatsApp
       </a>
     </div>
