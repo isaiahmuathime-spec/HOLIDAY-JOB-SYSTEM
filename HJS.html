@@ -311,5 +311,26 @@
   </div>
 </footer>
 
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const enrollButtons = document.querySelectorAll('.menu-card .btn-info');
+    enrollButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const cardBody = e.target.closest('.card-body');
+        const jobTitle = cardBody.querySelector('h5').innerText;
+        
+        let enrollments = JSON.parse(localStorage.getItem('hjs_enrollments') || '[]');
+        enrollments.push({
+          job: jobTitle,
+          student: 'student', // Since there's only one student login
+          timestamp: new Date().toLocaleString()
+        });
+        localStorage.setItem('hjs_enrollments', JSON.stringify(enrollments));
+        
+        alert(`Successfully enrolled in ${jobTitle}!`);
+      });
+    });
+  });
+</script>
 </body>
 </html>
