@@ -16,6 +16,7 @@
 
   <!-- Font Awesome -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
+  <script src="data.js"></script>
 
   <style>
     body {
@@ -96,6 +97,28 @@
       padding: 15px;
       background: #82eefd;
     }
+
+    .menu-card .btn-disabled {
+      background-color: #6c757d;
+      border-color: #6c757d;
+      cursor: not-allowed;
+      opacity: 0.75;
+    }
+
+    .spots-badge {
+      display: inline-block;
+      font-size: 0.8rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      background: rgba(82, 178, 191, 0.15);
+      color: #2c7a7b;
+      margin-bottom: 0.5rem;
+    }
+
+    .spots-badge.full {
+      background: rgba(155, 34, 38, 0.12);
+      color: #9b2226;
+    }
   </style>
 </head>
 
@@ -130,138 +153,7 @@
 <!-- MENU SECTION -->
 <section class="container my-5" id="jobs">
   <h2 class="text-center mb-4">Holiday Jobs</h2>
-  <div class="row g-4">
-
-    <div class="col-md-4">
-      <div class="card menu-card">
-        <img src="Bungoma County Offices.jpg" class="card-img-top">
-        <div class="card-body text-center">
-          <h5>Bungoma County Offices</h5>
-          <p>04/04/2026 - 14/04/2026</p>
-          <button class="btn btn-info">Enroll</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-4">
-      <div class="card menu-card">
-        <img src="KNH.jpg" class="card-img-top">
-        <div class="card-body text-center">
-          <h5>Kenyatta Hospital</h5>
-          <p>04/04/2026 - 14/04/2026</p>
-          <button class="btn btn-info">Enroll</button>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card menu-card">
-        <img src="Milimani Law Courts.jpg" class="card-img-top">
-        <div class="card-body text-center">
-          <h5>Milimani Law Courts</h5>
-          <p>04/04/2026 - 14/04/2026</p>
-          <button class="btn btn-info">Enroll</button>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card menu-card">
-        <img src="Siaya County Offices.jpg" class="card-img-top">
-        <div class="card-body text-center">
-          <h5>Siaya County Offices</h5>
-          <p>04/04/2026 - 14/04/2026</p>
-          <button class="btn btn-info">Enroll</button>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card menu-card">
-        <img src="KCMH.jpg" class="card-img-top">
-        <div class="card-body text-center">
-          <h5>Kajiado County Mission Hospital</h5>
-          <p>04/04/2026 - 14/04/2026</p>
-          <button class="btn btn-info">Enroll</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-4">
-      <div class="card menu-card">
-        <img src="Parliament.jpg" class="card-img-top">
-        <div class="card-body text-center">
-          <h5>Parliament Of Kenya</h5>
-          <p>04/04/2026 - 14/04/2026</p>
-          <button class="btn btn-info">Enroll</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-4">
-      <div class="card menu-card">
-        <img src="Archives.jpg" class="card-img-top">
-        <div class="card-body text-center">
-          <h5>National Archives</h5>
-          <p>04/04/2026 - 14/04/2026</p>
-          <button class="btn btn-info">Enroll</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-4">
-      <div class="card menu-card">
-        <img src="Garissa County.jpg" class="card-img-top">
-        <div class="card-body text-center">
-          <h5>Garissa County Goverment Offices</h5>
-          <p>04/04/2026 - 14/04/2026</p>
-          <button class="btn btn-info">Enroll</button>
-        </div>
-      </div>
-    </div>
-    
-    <div class="col-md-4">
-      <div class="card menu-card">
-        <img src="wilson airrport.jpg" class="card-img-top">
-        <div class="card-body text-center">
-          <h5>Wilson Airport</h5>
-          <p>04/04/2026 - 14/04/2026</p>
-          <button class="btn btn-info">Enroll</button>
-        </div>
-      </div>
-    </div>
-    
-    <div class="col-md-4">
-      <div class="card menu-card">
-        <img src="kisumu.jpg" class="card-img-top">
-        <div class="card-body text-center">
-          <h5>Kisumu County Law Court</h5>
-          <p>04/04/2026 - 14/04/2026</p>
-          <button class="btn btn-info">Enroll</button>
-        </div>
-      </div>
-    </div>
-    
-    <div class="col-md-4">
-      <div class="card menu-card">
-        <img src="National library.jpg" class="card-img-top">
-        <div class="card-body text-center">
-          <h5>National Library</h5>
-          <p>04/04/2026 - 14/04/2026</p>
-          <button class="btn btn-info">Enroll</button>
-        </div>
-      </div>
-    </div>
-    
-    <div class="col-md-4">
-      <div class="card menu-card">
-        <img src="KWS.jpg" class="card-img-top">
-        <div class="card-body text-center">
-          <h5>Kenya Wild LIfe Offices</h5>
-          <p>04/04/2026 - 14/04/2026</p>
-          <button class="btn btn-info">Enroll</button>
-        </div>
-      </div>
-    </div>
-
-  </div>
+  <div class="row g-4" id="jobsContainer"></div>
 </section>
 
 <!-- FOOTER -->
@@ -313,23 +205,51 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    const enrollButtons = document.querySelectorAll('.menu-card .btn-info');
-    enrollButtons.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const cardBody = e.target.closest('.card-body');
-        const jobTitle = cardBody.querySelector('h5').innerText;
-        
-        let enrollments = JSON.parse(localStorage.getItem('hjs_enrollments') || '[]');
-        enrollments.push({
-          job: jobTitle,
-          student: 'student', // Since there's only one student login
-          timestamp: new Date().toLocaleString()
+    HJSData.initJobs();
+    renderJobs();
+
+    function renderJobs() {
+      const jobs = HJSData.getJobs();
+      const container = document.getElementById('jobsContainer');
+
+      if (!jobs.length) {
+        container.innerHTML = '<div class="col-12 text-center text-muted py-5"><p>No holiday jobs are available at the moment. Please check back later.</p></div>';
+        return;
+      }
+
+      container.innerHTML = jobs.map(job => {
+        const full = HJSData.isJobFull(job);
+        const imgSrc = HJSData.getJobImage(job.title);
+        return `
+          <div class="col-md-4">
+            <div class="card menu-card h-100">
+              <img src="${imgSrc}" class="card-img-top" alt="${job.title}" onerror="this.src='images/starehe logo.jpg'">
+              <div class="card-body text-center d-flex flex-column">
+                <h5>${job.title}</h5>
+                <p class="small text-muted mb-1">${job.organization}</p>
+                <p class="small">${job.dates || '04/04/2026 - 14/04/2026'}</p>
+                <span class="spots-badge ${full ? 'full' : ''}">${job.filledSpots} / ${job.totalSpots} spots filled</span>
+                <button
+                  class="btn ${full ? 'btn-secondary btn-disabled' : 'btn-info'} mt-auto apply-btn"
+                  data-job-id="${job.id}"
+                  ${full ? 'disabled' : ''}
+                >
+                  ${full ? 'Fully Booked' : 'Apply'}
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      container.querySelectorAll('.apply-btn:not([disabled])').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const result = HJSData.submitApplication(btn.dataset.jobId);
+          alert(result.message);
+          if (result.ok) renderJobs();
         });
-        localStorage.setItem('hjs_enrollments', JSON.stringify(enrollments));
-        
-        alert(`Successfully enrolled in ${jobTitle}!`);
       });
-    });
+    }
   });
 </script>
 </body>

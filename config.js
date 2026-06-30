@@ -7,7 +7,7 @@
 const CONFIG = {
   // Admin Credentials
   admin: {
-    username: 'admin',
+    username: 'Admin',
     password: '11223344'
   },
 
