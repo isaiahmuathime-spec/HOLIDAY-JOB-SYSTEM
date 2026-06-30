@@ -8,7 +8,7 @@ const CONFIG = {
   // Admin Credentials
   admin: {
     username: 'admin',
-    password: 'adminpassword'
+    password: '11223344'
   },
 
   // Application Settings
