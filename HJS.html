@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Holiday Job</title>
+  <title>Holiday Job System</title>
   <script>
     if (localStorage.getItem('hjsLoggedIn') !== 'true') {
       window.location.replace('LoginHJS.html');
@@ -19,119 +19,519 @@
   <script src="data.js"></script>
 
   <style>
+    :root {
+      --navy-blue: #1e3a8a;
+      --navy-dark: #0f2557;
+      --crimson-red: #dc2626;
+      --crimson-dark: #b91c1c;
+      --accent-blue: #3b82f6;
+      --light-bg: #f1f5f9;
+      --white: #ffffff;
+      --gray-50: #f8fafc;
+      --gray-100: #f1f5f9;
+      --gray-200: #e2e8f0;
+      --gray-300: #cbd5e1;
+      --gray-600: #64748b;
+      --gray-700: #475569;
+      --gray-800: #1e293b;
+      --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --card-hover-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f8f9fa;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(180deg, var(--gray-50) 0%, var(--light-bg) 100%);
+      min-height: 100vh;
+      color: var(--gray-800);
     }
 
     /* Navbar */
     .navbar {
-      background-color: #52B2BF;
+      background: linear-gradient(135deg, var(--navy-blue) 0%, var(--navy-dark) 100%) !important;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+      padding: 1.25rem 0;
+      border-bottom: 3px solid var(--crimson-red);
     }
 
-    .navbar a {
+    .navbar-brand {
+      font-weight: 800;
+      font-size: 1.5rem;
       color: white !important;
-      font-weight: 500;
-      transition: 0.3s;
+      letter-spacing: -0.5px;
     }
 
-    .navbar a:hover {
-      color: #00c6ff !important;
+    .navbar-brand i {
+      color: var(--crimson-red);
+      margin-right: 0.5rem;
+    }
+
+    .nav-link {
+      color: rgba(255, 255, 255, 0.9) !important;
+      font-weight: 500;
+      transition: all 0.3s;
+      margin: 0 0.5rem;
+      position: relative;
+    }
+
+    .nav-link:hover {
+      color: white !important;
       transform: translateY(-2px);
     }
 
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--crimson-red);
+      transition: width 0.3s;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* Hero Section */
     .hero {
-      background: url('images/randb.webp') center/cover no-repeat;
-      height: 60vh;
+      background: linear-gradient(135deg, rgba(30, 58, 138, 0.95) 0%, rgba(15, 37, 87, 0.95) 100%),
+                  url('images/randb.webp') center/cover no-repeat;
+      height: 70vh;
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
       text-align: center;
-      background-blend-mode: overlay;
-      background-color: rgba(0,0,0,0.5);
+      position: relative;
+      overflow: hidden;
+      border-bottom: 4px solid var(--crimson-red);
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+      opacity: 0.3;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+      padding: 2rem;
     }
 
     .hero h1 {
-      font-size: 3rem;
+      font-size: 3.5rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      letter-spacing: -1px;
+      color: white;
     }
 
-    .menu-card img {
-      height: 200px;
-      object-fit: cover;
+    .hero p {
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
+      opacity: 0.95;
+      font-weight: 400;
+      color: white;
     }
 
-    .menu-card {
-      transition: 0.3s;
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      padding: 0.75rem 1.5rem;
+      border-radius: 50px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      font-weight: 600;
+      margin-top: 1rem;
+      color: white;
     }
 
-    .menu-card:hover {
+    /* Stats Section */
+    .stats-section {
+      background: white;
+      padding: 3rem 0;
+      margin-top: -50px;
+      position: relative;
+      z-index: 10;
+      box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      text-align: center;
+      box-shadow: var(--card-shadow);
+      transition: all 0.3s;
+      border-top: 4px solid var(--accent-blue);
+      height: 100%;
+      border: 1px solid var(--gray-200);
+    }
+
+    .stat-card:nth-child(2) {
+      border-top-color: var(--crimson-red);
+    }
+
+    .stat-card:nth-child(3) {
+      border-top-color: var(--navy-blue);
+    }
+
+    .stat-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      box-shadow: var(--card-hover-shadow);
     }
 
+    .stat-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, var(--accent-blue), var(--navy-blue));
+      color: white;
+    }
+
+    .stat-card:nth-child(2) .stat-icon {
+      background: linear-gradient(135deg, var(--crimson-red), var(--crimson-dark));
+    }
+
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--navy-blue);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      color: var(--gray-600);
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin: 0;
+    }
+
+    /* Jobs Section */
+    .jobs-section {
+      padding: 4rem 0;
+      background: var(--light-bg);
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--navy-blue);
+      margin-bottom: 0.5rem;
+      text-align: center;
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: var(--crimson-red);
+      border-radius: 2px;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      color: var(--gray-600);
+      font-size: 1.1rem;
+      margin-bottom: 3rem;
+      margin-top: 1.5rem;
+    }
+
+    .job-card {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+      transition: all 0.3s;
+      height: 100%;
+      border: 1px solid var(--gray-200);
+    }
+
+    .job-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--card-hover-shadow);
+      border-color: var(--accent-blue);
+    }
+
+    .job-card-image {
+      position: relative;
+      height: 220px;
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%);
+    }
+
+    .job-card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+
+    .job-card:hover .job-card-image img {
+      transform: scale(1.05);
+    }
+
+    .job-card-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      border: 2px solid var(--gray-200);
+    }
+
+    .job-card-badge.open {
+      color: #059669;
+      background: rgba(16, 185, 129, 0.1);
+      border-color: #10b981;
+    }
+
+    .job-card-badge.full {
+      color: var(--crimson-red);
+      background: rgba(220, 38, 38, 0.1);
+      border-color: var(--crimson-red);
+    }
+
+    .job-card-body {
+      padding: 1.5rem;
+    }
+
+    .job-card-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--navy-blue);
+      margin-bottom: 0.5rem;
+    }
+
+    .job-card-org {
+      color: var(--gray-600);
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .job-card-org i {
+      color: var(--crimson-red);
+      margin-right: 0.5rem;
+    }
+
+    .job-card-dates {
+      color: var(--gray-600);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .job-card-dates i {
+      color: var(--accent-blue);
+      margin-right: 0.5rem;
+    }
+
+    .spots-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      padding: 0.75rem 1rem;
+      background: var(--gray-50);
+      border-radius: 12px;
+      border: 1px solid var(--gray-200);
+    }
+
+    .spots-text {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      white-space: nowrap;
+    }
+
+    .spots-bar {
+      flex: 1;
+      height: 8px;
+      background: var(--gray-200);
+      border-radius: 10px;
+      margin: 0 1rem;
+      overflow: hidden;
+    }
+
+    .spots-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-blue), var(--crimson-red));
+      border-radius: 10px;
+      transition: width 0.4s ease;
+    }
+
+    .btn-apply {
+      width: 100%;
+      padding: 0.875rem;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s;
+      background: linear-gradient(135deg, var(--crimson-red), var(--crimson-dark));
+      color: white;
+      box-shadow: 0 4px 6px rgba(220, 38, 38, 0.2);
+    }
+
+    .btn-apply:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(220, 38, 38, 0.3);
+      background: linear-gradient(135deg, var(--crimson-dark), var(--crimson-red));
+    }
+
+    .btn-apply:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .btn-apply:disabled {
+      background: var(--gray-300);
+      cursor: not-allowed;
+      opacity: 0.6;
+      box-shadow: none;
+    }
+
+    /* Footer */
     .footer {
-      background: linear-gradient(135deg, #52B2BF, #000);
-      color: #fff;
-      padding-top: 50px;
+      background: linear-gradient(135deg, var(--navy-blue) 0%, var(--navy-dark) 100%);
+      color: white;
+      padding: 3rem 0 1rem;
+      margin-top: 4rem;
+      border-top: 4px solid var(--crimson-red);
     }
 
-    .footer-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 30px;
-      padding: 20px;
+    .footer h4 {
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .footer h5 {
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: white;
+    }
+
+    .footer p {
+      opacity: 0.9;
+      margin-bottom: 0.5rem;
     }
 
     .footer a {
-      color: #ccc;
+      color: rgba(255, 255, 255, 0.8);
       text-decoration: none;
+      transition: all 0.3s;
     }
 
     .footer a:hover {
-      color: #00c6ff;
+      color: white;
+      padding-left: 5px;
+    }
+
+    .social-icons a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      margin-right: 0.5rem;
+      transition: all 0.3s;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .social-icons a:hover {
+      background: var(--crimson-red);
+      transform: translateY(-3px);
+      border-color: var(--crimson-red);
     }
 
     .footer-bottom {
       text-align: center;
-      padding: 15px;
-      background: #82eefd;
+      padding-top: 2rem;
+      margin-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      opacity: 0.8;
     }
 
-    .menu-card .btn-disabled {
-      background-color: #6c757d;
-      border-color: #6c757d;
-      cursor: not-allowed;
-      opacity: 0.75;
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+
+      .hero p {
+        font-size: 1rem;
+      }
+
+      .section-title {
+        font-size: 2rem;
+      }
+
+      .stats-section {
+        margin-top: -30px;
+      }
     }
 
-    .spots-badge {
-      display: inline-block;
-      font-size: 0.8rem;
-      padding: 0.2rem 0.6rem;
-      border-radius: 999px;
-      background: rgba(82, 178, 191, 0.15);
-      color: #2c7a7b;
-      margin-bottom: 0.5rem;
+    /* Loading Animation */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
-    .spots-badge.full {
-      background: rgba(155, 34, 38, 0.12);
-      color: #9b2226;
+    .job-card {
+      animation: fadeIn 0.5s ease-out;
     }
   </style>
 </head>
-
 <body>
 
 <!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg">
+<nav class="navbar">
   <div class="container">
-    <a class="navbar-brand text-white" href="#">HOLIDAY JOB</a>
-    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navMenu">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
+    <a class="navbar-brand" href="#">
+      <i class="fas fa-briefcase"></i>Holiday Job System
+    </a>
     <div class="collapse navbar-collapse" id="navMenu">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
@@ -144,62 +544,95 @@
 
 <!-- HERO SECTION -->
 <section class="hero">
-  <div>
-    <h1>Partake in Voluntary Service over the Holiday</h1>
-    <p>Build your career step by step</p>
+  <div class="hero-content">
+    <h1>Build Your Career This Holiday</h1>
+    <p>Discover exciting volunteer opportunities and gain valuable professional experience</p>
+    <div class="hero-badge">
+      <i class="fas fa-star me-2"></i>Trusted by Students Across Kenya
+    </div>
   </div>
 </section>
 
-<!-- MENU SECTION -->
-<section class="container my-5" id="jobs">
-  <h2 class="text-center mb-4">Holiday Jobs</h2>
-  <div class="row g-4" id="jobsContainer"></div>
+<!-- STATS SECTION -->
+<section class="stats-section">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-briefcase"></i>
+          </div>
+          <div class="stat-value" id="totalJobs">0</div>
+          <p class="stat-label">Available Positions</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="stat-value" id="totalApplications">0</div>
+          <p class="stat-label">Applications Submitted</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div class="stat-value" id="approvedApplications">0</div>
+          <p class="stat-label">Approved Placements</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JOBS SECTION -->
+<section class="jobs-section" id="jobs">
+  <div class="container">
+    <h2 class="section-title">Available Holiday Jobs</h2>
+    <p class="section-subtitle">Explore and apply for exciting opportunities</p>
+    <div class="row g-4" id="jobsContainer"></div>
+  </div>
 </section>
 
 <!-- FOOTER -->
-<footer class="footer">
-  <div class="footer-container">
-
-    <!-- Brand -->
-    <div>
-      <h4>Voluntary Service Scheme - VSS</h4>
-      <p>Reach to us for further Guidance.</p>
-
-      <!-- Social Icons -->
-      <div class="mt-3">
-        <a href="#" class="me-2"><i class="fab fa-facebook-f"></i></a>
-        <a href="#" class="me-2"><i class="fab fa-instagram"></i></a>
-        <a href="#" class="me-2"><i class="fab fa-twitter"></i></a>
+<footer class="footer" id="contacts">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-4 mb-4">
+        <h4><i class="fas fa-graduation-cap me-2"></i>Voluntary Service Scheme</h4>
+        <p>Empowering students with real-world experience and professional development opportunities.</p>
+        <div class="social-icons mt-3">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      <div class="col-lg-4 mb-4">
+        <h5>Quick Links</h5>
+        <ul class="list-unstyled">
+          <li><a href="#" class="d-block py-1">Home</a></li>
+          <li><a href="#jobs" class="d-block py-1">Browse Jobs</a></li>
+          <li><a href="#" class="d-block py-1">My Applications</a></li>
+          <li><a href="#" class="d-block py-1">Help & Support</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 mb-4">
+        <h5>Contact Us</h5>
+        <p><i class="fas fa-envelope me-2"></i>info@stareheboyscentre.ac.ke</p>
+        <p><i class="fas fa-phone me-2"></i>+254 790 537 227</p>
+        <p><i class="fas fa-map-marker-alt me-2"></i>Nairobi, Kenya</p>
+        <a href="https://wa.me/254727531001" target="_blank" class="btn btn-success mt-3">
+          <i class="fab fa-whatsapp me-2"></i>Reach Out via WhatsApp
+        </a>
       </div>
     </div>
-
-    <!-- Links -->
-    <div>
-      <h5>Quick Links</h5>
-      <ul class="list-unstyled">
-        <li><a href="#">Home</a></li>
-        <li><a href="#jobs">Jobs</a></li>
-        <li><a href="#">Contact</a></li>
-      </ul>
+    <div class="footer-bottom">
+      <p class="mb-0">&copy; 2026 Holiday Job System. All rights reserved.</p>
     </div>
-
-    <!-- Contact -->
-    <div id="contacts">
-      <h5>Contact</h5>
-      <p><i class="fas fa-envelope"></i>info@stareheboyscentre.ac.ke </p>
-      <p><i class="fas fa-phone"></i> +254 790 537 227</p>
-      <p><i class="fas fa-map-marker-alt"></i> Nairobi, Kenya</p>
-
-      <!-- WhatsApp Button -->
-      <a href="https://wa.me/254727531001" target="_blank" class="btn btn-success mt-2">
-        <i class="fab fa-whatsapp"></i> Reach Out via WhatsApp
-      </a>
-    </div>
-
-  </div>
-
-  <div class="footer-bottom">
-    <p>© 2026 Insight Dinners. All rights reserved.</p>
   </div>
 </footer>
 
@@ -207,34 +640,73 @@
   document.addEventListener('DOMContentLoaded', () => {
     HJSData.initJobs();
     renderJobs();
+    renderStats();
+
+    function renderStats() {
+      const jobs = HJSData.getJobs();
+      const applications = HJSData.getApplications();
+      const profile = HJSData.getStudentProfile();
+      
+      const myApplications = applications.filter(a => a.admissionNumber === profile.admissionNumber);
+      const approved = myApplications.filter(a => a.status === 'approved').length;
+
+      document.getElementById('totalJobs').textContent = jobs.length;
+      document.getElementById('totalApplications').textContent = myApplications.length;
+      document.getElementById('approvedApplications').textContent = approved;
+    }
 
     function renderJobs() {
       const jobs = HJSData.getJobs();
       const container = document.getElementById('jobsContainer');
 
       if (!jobs.length) {
-        container.innerHTML = '<div class="col-12 text-center text-muted py-5"><p>No holiday jobs are available at the moment. Please check back later.</p></div>';
+        container.innerHTML = `
+          <div class="col-12 text-center py-5">
+            <i class="fas fa-briefcase fa-3x mb-3" style="color: #cbd5e1;"></i>
+            <p class="text-muted">No holiday jobs are available at the moment. Please check back later.</p>
+          </div>
+        `;
         return;
       }
 
       container.innerHTML = jobs.map(job => {
         const full = HJSData.isJobFull(job);
         const imgSrc = HJSData.getJobImage(job.title);
+        const pct = Math.min(100, (job.filledSpots / job.totalSpots) * 100);
+        
         return `
           <div class="col-md-4">
-            <div class="card menu-card h-100">
-              <img src="${imgSrc}" class="card-img-top" alt="${job.title}" onerror="this.src='images/starehe logo.jpg'">
-              <div class="card-body text-center d-flex flex-column">
-                <h5>${job.title}</h5>
-                <p class="small text-muted mb-1">${job.organization}</p>
-                <p class="small">${job.dates || '04/04/2026 - 14/04/2026'}</p>
-                <span class="spots-badge ${full ? 'full' : ''}">${job.filledSpots} / ${job.totalSpots} spots filled</span>
+            <div class="job-card">
+              <div class="job-card-image">
+                <img src="${imgSrc}" alt="${job.title}" onerror="this.src='images/starehe logo.jpg'">
+                <span class="job-card-badge ${full ? 'full' : 'open'}">
+                  <i class="fas ${full ? 'fa-times-circle' : 'fa-check-circle'} me-1"></i>
+                  ${full ? 'Fully Booked' : 'Open'}
+                </span>
+              </div>
+              <div class="job-card-body">
+                <h5 class="job-card-title">${job.title}</h5>
+                <p class="job-card-org">
+                  <i class="fas fa-building"></i>
+                  ${job.organization}
+                </p>
+                <p class="job-card-dates">
+                  <i class="fas fa-calendar-alt"></i>
+                  ${job.dates || '04/04/2026 - 14/04/2026'}
+                </p>
+                <div class="spots-indicator">
+                  <span class="spots-text">${job.filledSpots}/${job.totalSpots} spots</span>
+                  <div class="spots-bar">
+                    <div class="spots-fill" style="width: ${pct}%"></div>
+                  </div>
+                </div>
                 <button
-                  class="btn ${full ? 'btn-secondary btn-disabled' : 'btn-info'} mt-auto apply-btn"
+                  class="btn-apply"
                   data-job-id="${job.id}"
                   ${full ? 'disabled' : ''}
                 >
-                  ${full ? 'Fully Booked' : 'Apply'}
+                  <i class="fas ${full ? 'fa-ban' : 'fa-paper-plane'} me-2"></i>
+                  ${full ? 'Fully Booked' : 'Apply Now'}
                 </button>
               </div>
             </div>
@@ -242,15 +714,19 @@
         `;
       }).join('');
 
-      container.querySelectorAll('.apply-btn:not([disabled])').forEach(btn => {
+      container.querySelectorAll('.btn-apply:not([disabled])').forEach(btn => {
         btn.addEventListener('click', () => {
           const result = HJSData.submitApplication(btn.dataset.jobId);
           alert(result.message);
-          if (result.ok) renderJobs();
+          if (result.ok) {
+            renderJobs();
+            renderStats();
+          }
         });
       });
     }
   });
 </script>
+
 </body>
 </html>

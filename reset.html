@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reset System</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+    }
+    .card {
+      background: white;
+      padding: 2.5rem;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+    }
+    h1 { color: #333; margin-bottom: 1rem; }
+    p { color: #666; margin-bottom: 2rem; }
+    .btn {
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 0.5rem;
+      transition: transform 0.2s;
+    }
+    .btn:hover { transform: translateY(-2px); background: #c82333; }
+    .btn-secondary { background: #6c757d; }
+    .btn-secondary:hover { background: #5a6268; }
+    .success { color: #28a745; font-weight: 600; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🔄 Reset Holiday Job System</h1>
+    <p>This will clear all student registrations, applications, and login sessions. Job postings will be preserved.</p>
+    <button class="btn" onclick="clearUserData()">Clear All User Data</button>
+    <br>
+    <button class="btn btn-secondary" onclick="clearEverything()">Clear Everything (Full Reset)</button>
+    <div id="message"></div>
+  </div>
+
+  <script>
+    function clearUserData() {
+      // Keep jobs, clear everything else
+      const jobs = localStorage.getItem('hjs_jobs');
+      localStorage.clear();
+      if (jobs) localStorage.setItem('hjs_jobs', jobs);
+      
+      document.getElementById('message').innerHTML = '<p class="success">✓ User data cleared! Jobs preserved.</p><p><a href="HJS.html">Go to Home Page</a></p>';
+    }
+
+    function clearEverything() {
+      localStorage.clear();
+      document.getElementById('message').innerHTML = '<p class="success">✓ Everything cleared! Full reset complete.</p><p><a href="HJS.html">Go to Home Page</a></p>';
+    }
+  </script>
+</body>
+</html>
