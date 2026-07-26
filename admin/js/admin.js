@@ -49,6 +49,7 @@ function renderJobs() {
             <span class="badge rounded-pill ${full ? 'badge-full' : 'badge-open'}">${full ? 'Full' : 'Open'}</span>
           </div>
           <small class="text-muted"><i class="fas fa-map-marker-alt me-1"></i>${escapeHtml(job.organization)}</small>
+          <small class="d-block text-muted mb-2"><i class="fas fa-calendar-alt me-1"></i>${escapeHtml(job.dates || 'Dates not set')}</small>
           <p class="small mt-2 mb-1">${escapeHtml(job.description)}</p>
           <div class="d-flex justify-content-between small mb-1">
             <span>Capacity</span>
@@ -57,9 +58,27 @@ function renderJobs() {
           <div class="capacity-bar">
             <div class="capacity-fill ${full ? 'full' : ''}" style="width:${pct}%"></div>
           </div>
-          <button class="btn btn-sm btn-outline-danger mt-2 w-100" onclick="removeJob('${job.id}')">
-            <i class="fas fa-trash-alt me-1"></i> Remove
-          </button>
+          <div class="d-flex gap-2 mt-2 flex-column flex-sm-row">
+            <button class="btn btn-sm btn-outline-secondary flex-fill" type="button" onclick="openEditJobModal('${job.id}')">
+              <i class="fas fa-edit me-1"></i> Edit
+            </button>
+            <div class="input-group input-group-sm" style="max-width:180px;">
+              <input
+                type="number"
+                class="form-control"
+                id="spots-${job.id}"
+                min="${job.filledSpots || 1}"
+                value="${job.totalSpots}"
+                aria-label="Total spots for ${escapeHtml(job.title)}"
+              />
+              <button class="btn btn-outline-primary" type="button" onclick="updateJobSpots('${job.id}')">
+                Save
+              </button>
+            </div>
+            <button class="btn btn-sm btn-outline-danger flex-fill" onclick="removeJob('${job.id}')">
+              <i class="fas fa-trash-alt me-1"></i> Remove
+            </button>
+          </div>
         </div>
       </div>
     `;
@@ -161,6 +180,7 @@ document.getElementById('addJobForm').addEventListener('submit', (e) => {
     title: document.getElementById('jobTitle').value,
     organization: document.getElementById('jobOrg').value,
     description: document.getElementById('jobDesc').value,
+    dates: document.getElementById('jobDates').value,
     totalSpots: document.getElementById('jobSpots').value
   });
   e.target.reset();
@@ -172,6 +192,58 @@ function removeJob(jobId) {
   if (!confirm('Remove this job from the active list?')) return;
   HJSData.removeJob(jobId);
   renderAll();
+}
+
+function openEditJobModal(jobId) {
+  const job = HJSData.getJobs().find(j => j.id === jobId);
+  if (!job) return;
+
+  document.getElementById('editJobId').value = job.id;
+  document.getElementById('editJobTitle').value = job.title;
+  document.getElementById('editJobOrg').value = job.organization;
+  document.getElementById('editJobDesc').value = job.description;
+  document.getElementById('editJobDates').value = job.dates || '';
+  document.getElementById('editJobSpots').value = job.totalSpots;
+
+  const modal = new bootstrap.Modal(document.getElementById('editJobModal'));
+  modal.show();
+}
+
+function updateJobSpots(jobId) {
+  const input = document.getElementById(`spots-${jobId}`);
+  if (!input) return;
+  const result = HJSData.updateJobSpots(jobId, input.value);
+  if (!result.ok) {
+    alert(result.message);
+    input.value = result.job ? result.job.totalSpots : input.getAttribute('min');
+    return;
+  }
+  renderAll();
+}
+
+const editJobForm = document.getElementById('editJobForm');
+if (editJobForm) {
+  editJobForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const jobId = document.getElementById('editJobId').value;
+    const result = HJSData.updateJob(jobId, {
+      title: document.getElementById('editJobTitle').value,
+      organization: document.getElementById('editJobOrg').value,
+      description: document.getElementById('editJobDesc').value,
+      dates: document.getElementById('editJobDates').value,
+      totalSpots: document.getElementById('editJobSpots').value
+    });
+
+    if (!result.ok) {
+      alert(result.message);
+      return;
+    }
+
+    renderAll();
+    const modalEl = document.getElementById('editJobModal');
+    const modal = bootstrap.Modal.getInstance(modalEl);
+    if (modal) modal.hide();
+  });
 }
 
 function approveApp(appId) {

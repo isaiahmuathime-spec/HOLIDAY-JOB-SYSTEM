@@ -212,17 +212,17 @@ const HJSData = (() => {
     return { ok: true };
   }
 
-  function addJob({ title, organization, description, totalSpots }) {
+  function addJob({ title, organization, description, dates, totalSpots }) {
     const jobs = getJobs();
     const job = {
       id: generateId('job'),
       title: title.trim(),
       organization: organization.trim(),
       description: description.trim(),
+      dates: dates ? dates.trim() : '04/04/2026 - 14/04/2026',
       totalSpots: parseInt(totalSpots, 10) || 1,
       filledSpots: 0,
-      image: '',
-      dates: '04/04/2026 - 14/04/2026'
+      image: ''
     };
     jobs.push(job);
     saveJobs(jobs);
@@ -232,6 +232,42 @@ const HJSData = (() => {
   function removeJob(jobId) {
     const jobs = getJobs().filter(j => j.id !== jobId);
     saveJobs(jobs);
+  }
+
+  function updateJob(jobId, updates) {
+    const jobs = getJobs();
+    const job = jobs.find(j => j.id === jobId);
+    if (!job) return { ok: false, message: 'Job not found.' };
+
+    if (updates.title !== undefined) {
+      job.title = updates.title.trim();
+    }
+    if (updates.organization !== undefined) {
+      job.organization = updates.organization.trim();
+    }
+    if (updates.description !== undefined) {
+      job.description = updates.description.trim();
+    }
+    if (updates.dates !== undefined) {
+      job.dates = updates.dates.trim();
+    }
+    if (updates.totalSpots !== undefined) {
+      const newTotal = parseInt(updates.totalSpots, 10);
+      if (Number.isNaN(newTotal) || newTotal < 1) {
+        return { ok: false, message: 'Total spots must be a positive number.' };
+      }
+      if (newTotal < job.filledSpots) {
+        return { ok: false, message: `Total spots cannot be less than already filled spots (${job.filledSpots}).` };
+      }
+      job.totalSpots = newTotal;
+    }
+
+    saveJobs(jobs);
+    return { ok: true, job };
+  }
+
+  function updateJobSpots(jobId, totalSpots) {
+    return updateJob(jobId, { totalSpots });
   }
 
   function isJobFull(job) {
@@ -348,6 +384,8 @@ const HJSData = (() => {
     getStats,
     getPendingApplications,
     getProcessedApplications,
+    updateJob,
+    updateJobSpots,
     getJobImage
   };
 })();
