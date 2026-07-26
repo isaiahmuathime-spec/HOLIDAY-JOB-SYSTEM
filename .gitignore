@@ -1,2 +1,6 @@
 # Ignore configuration files with sensitive credentials
 config.js
+
+# Ignore backend storage and dependencies
+server/data/
+node_modules/
