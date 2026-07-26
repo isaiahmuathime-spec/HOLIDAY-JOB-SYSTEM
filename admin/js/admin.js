@@ -17,7 +17,7 @@ function updateThemeIcon(theme) {
 }
 
 function logout() {
-  localStorage.removeItem('hjsAdminLoggedIn');
+  HJSData.clearAdminSession();
   window.location.href = '../LoginHJS.html';
 }
 
@@ -267,4 +267,3 @@ function declineApp(appId) {
 }
 
 renderAll();
-setInterval(renderAll, 5000);

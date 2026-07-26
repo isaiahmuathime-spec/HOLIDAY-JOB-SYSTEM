@@ -3,7 +3,9 @@ const HJSData = (() => {
     jobs: 'hjs_jobs',
     applications: 'hjs_applications',
     studentProfile: 'hjs_student_profile',
-    students: 'hjs_students'
+    students: 'hjs_students',
+    adminSession: 'hjs_admin_session',
+    studentSession: 'hjs_student_session'
   };
 
   const DEFAULT_JOBS = [
@@ -70,6 +72,43 @@ const HJSData = (() => {
 
   function generateId(prefix) {
     return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  }
+
+  function hashValue(value) {
+    const str = String(value || '');
+    let hash = 5381;
+    for (let i = 0; i < str.length; i += 1) {
+      hash = ((hash << 5) + hash) + str.charCodeAt(i);
+    }
+    return (hash >>> 0).toString(16);
+  }
+
+  function getAdminSession() {
+    return read(KEYS.adminSession);
+  }
+
+  function saveAdminSession(session) {
+    write(KEYS.adminSession, session);
+  }
+
+  function clearAdminSession() {
+    localStorage.removeItem(KEYS.adminSession);
+  }
+
+  function getStudentSession() {
+    return read(KEYS.studentSession);
+  }
+
+  function saveStudentSession(session) {
+    write(KEYS.studentSession, session);
+  }
+
+  function clearStudentSession() {
+    localStorage.removeItem(KEYS.studentSession);
+  }
+
+  function isSessionValid(session) {
+    return session && typeof session.token === 'string' && session.token && session.expiresAt && new Date(session.expiresAt) > new Date();
   }
 
   function migrateLegacyEnrollments() {
@@ -173,8 +212,8 @@ const HJSData = (() => {
       admissionNumber: admissionNumber.trim(),
       form: form.trim(),
       studentClass: studentClass.trim(),
-      email: email.trim(),
-      password: password
+      email: email.trim().toLowerCase(),
+      passwordHash: hashValue(password)
     };
 
     students.push(student);
@@ -190,15 +229,30 @@ const HJSData = (() => {
     return { ok: true, message: 'Account created successfully! You can now log in.' };
   }
 
-  function loginStudent(fullName, password) {
+  function loginStudent(identifier, password) {
     const students = getStudents();
+    const normalized = identifier.trim().toLowerCase();
+    const hashedPassword = hashValue(password);
     const student = students.find(s =>
-      s.name.toLowerCase() === fullName.trim().toLowerCase() &&
-      s.password === password
+      (s.email && s.email.toLowerCase() === normalized) ||
+      (s.name && s.name.toLowerCase() === normalized)
     );
 
     if (!student) {
-      return { ok: false, message: 'Incorrect full name or password. Please try again.' };
+      return { ok: false, message: 'Incorrect email or password. Please try again.' };
+    }
+
+    const legacyMatch = student.password && student.password === password;
+    const secureMatch = student.passwordHash && student.passwordHash === hashedPassword;
+
+    if (!secureMatch && !legacyMatch) {
+      return { ok: false, message: 'Incorrect email or password. Please try again.' };
+    }
+
+    if (legacyMatch && !student.passwordHash) {
+      student.passwordHash = hashedPassword;
+      delete student.password;
+      saveStudents(students);
     }
 
     saveStudentProfile({
@@ -209,7 +263,7 @@ const HJSData = (() => {
       email: student.email
     });
 
-    return { ok: true };
+    return { ok: true, student };
   }
 
   function addJob({ title, organization, description, dates, totalSpots }) {
@@ -384,6 +438,14 @@ const HJSData = (() => {
     getStats,
     getPendingApplications,
     getProcessedApplications,
+    getAdminSession,
+    saveAdminSession,
+    clearAdminSession,
+    getStudentSession,
+    saveStudentSession,
+    clearStudentSession,
+    isSessionValid,
+    hashValue,
     updateJob,
     updateJobSpots,
     getJobImage

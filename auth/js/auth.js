@@ -81,7 +81,7 @@ form.addEventListener('submit', function (event) {
   if (isAdminMode) {
     const adminUsername = adminUsernameInput.value.trim();
     const adminCredUsername = (typeof CONFIG !== 'undefined' && CONFIG.admin) ? CONFIG.admin.username : null;
-    const adminPassword = (typeof CONFIG !== 'undefined' && CONFIG.admin) ? CONFIG.admin.password : null;
+    const adminPasswordHash = (typeof CONFIG !== 'undefined' && CONFIG.admin) ? CONFIG.admin.passwordHash : null;
 
     if (!adminUsername || !password) {
       messageBox.textContent = 'Please enter your admin username and password.';
@@ -89,8 +89,12 @@ form.addEventListener('submit', function (event) {
       return;
     }
 
-    if (adminUsername === adminCredUsername && password === adminPassword) {
-      localStorage.setItem('hjsAdminLoggedIn', 'true');
+    if (adminUsername === adminCredUsername && HJSData.hashValue(password) === adminPasswordHash) {
+      HJSData.saveAdminSession({
+        token: HJSData.generateId('admin'),
+        expiresAt: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
+        username: adminUsername
+      });
       messageBox.textContent = 'Admin login successful. Redirecting...';
       messageBox.className = 'message success';
       window.location.href = '../admin/index.html';
@@ -153,21 +157,26 @@ form.addEventListener('submit', function (event) {
     return;
   }
 
-  const fullName = loginFullNameInput.value.trim();
-  if (!fullName || !password) {
-    messageBox.textContent = 'Please enter your full name and password.';
+  const identifier = loginFullNameInput.value.trim();
+  if (!identifier || !password) {
+    messageBox.textContent = 'Please enter your email or full name and password.';
     messageBox.className = 'message error';
     return;
   }
 
-  const result = HJSData.loginStudent(fullName, password);
+  const result = HJSData.loginStudent(identifier, password);
   if (!result.ok) {
     messageBox.textContent = result.message;
     messageBox.className = 'message error';
     return;
   }
 
-  localStorage.setItem('hjsLoggedIn', 'true');
+  HJSData.saveStudentSession({
+    token: HJSData.generateId('student'),
+    expiresAt: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+    admissionNumber: result.student.admissionNumber,
+    email: result.student.email
+  });
   messageBox.textContent = 'Login successful. Redirecting...';
   messageBox.className = 'message success';
   window.location.href = '../student/index.html';
