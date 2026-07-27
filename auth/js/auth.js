@@ -13,6 +13,9 @@ const signupFieldEls = document.querySelectorAll('.signup-field');
 const confirmPasswordInput = document.getElementById('confirmPassword');
 const loginFullNameInput = document.getElementById('loginFullName');
 const adminUsernameInput = document.getElementById('adminUsername');
+const passwordInput = document.getElementById('password');
+const togglePasswordBtn = document.getElementById('togglePassword');
+const passwordEyeIcon = document.getElementById('passwordEyeIcon');
 
 let isAdminMode = false;
 let isSignUpMode = true;
@@ -64,6 +67,12 @@ btnAdmin.addEventListener('click', () => setLoginMode(true));
 btnSignUp.addEventListener('click', () => setStudentAuthMode(true));
 btnLogIn.addEventListener('click', () => setStudentAuthMode(false));
 
+togglePasswordBtn.addEventListener('click', () => {
+  const type = passwordInput.type === 'password' ? 'text' : 'password';
+  passwordInput.type = type;
+  passwordEyeIcon.className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+});
+
 const form = document.getElementById('authForm');
 const messageBox = document.getElementById('formMessage');
 
@@ -89,7 +98,22 @@ form.addEventListener('submit', function (event) {
       return;
     }
 
-    if (adminUsername === adminCredUsername && HJSData.hashValue(password) === adminPasswordHash) {
+    // Debug logging
+    console.log('Admin Login Attempt:', {
+      inputUsername: adminUsername,
+      configUsername: adminCredUsername,
+      usernameMatch: adminUsername === adminCredUsername,
+      inputPassword: password,
+      inputHash: HJSData.hashValue(password),
+      storedHash: adminPasswordHash,
+      hashMatch: HJSData.hashValue(password) === adminPasswordHash
+    });
+
+    // Case-insensitive username comparison
+    const usernameMatch = adminUsername.toLowerCase() === adminCredUsername.toLowerCase();
+    const passwordMatch = HJSData.hashValue(password) === adminPasswordHash;
+
+    if (usernameMatch && passwordMatch) {
       HJSData.saveAdminSession({
         token: HJSData.generateId('admin'),
         expiresAt: new Date(Date.now() + 30 * 60 * 1000).toISOString(),

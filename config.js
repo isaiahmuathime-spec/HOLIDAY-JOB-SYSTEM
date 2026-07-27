@@ -8,7 +8,7 @@ const CONFIG = {
   // Admin Credentials (stored as a hash, not plaintext)
   admin: {
     username: 'Admin',
-    passwordHash: 'HolidayJob'
+    passwordHash: '185030e4' // Hash of 'admin123'
   },
 
   // Application Settings
