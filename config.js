@@ -23,6 +23,9 @@ const CONFIG = {
     endpoints: {
       login: '/api/auth/login',
       signup: '/api/auth/signup',
+      adminLogin: '/api/auth/admin/login',
+      adminSignup: '/api/auth/admin/signup',
+      creatorLogin: '/api/auth/creator/login',
       jobs: '/api/jobs'
     }
   }

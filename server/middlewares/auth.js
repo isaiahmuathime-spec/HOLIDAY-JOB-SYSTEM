@@ -1,5 +1,8 @@
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = process.env.JWT_SECRET || 'holiday-job-secret';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required.');
+}
 
 function authenticateToken(req, res, next) {
   const authHeader = req.headers.authorization;
@@ -24,4 +27,11 @@ function authorizeAdmin(req, res, next) {
   return next();
 }
 
-module.exports = { authenticateToken, authorizeAdmin };
+function authorizeAdminOrCreator(req, res, next) {
+  if (!req.user || (req.user.role !== 'admin' && req.user.role !== 'creator')) {
+    return res.status(403).json({ message: 'Admin or creator access required.' });
+  }
+  return next();
+}
+
+module.exports = { authenticateToken, authorizeAdmin, authorizeAdminOrCreator };

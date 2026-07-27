@@ -1,6 +1,6 @@
 const express = require('express');
 const { readData, saveData, ensureDataFile } = require('../utils/dataStore');
-const { authenticateToken, authorizeAdmin } = require('../middlewares/auth');
+const { authenticateToken, authorizeAdminOrCreator } = require('../middlewares/auth');
 
 const router = express.Router();
 ensureDataFile();

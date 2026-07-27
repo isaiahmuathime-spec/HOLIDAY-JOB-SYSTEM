@@ -1,5 +1,6 @@
 # Ignore configuration files with sensitive credentials
 config.js
+.env
 
 # Ignore backend storage and dependencies
 server/data/
