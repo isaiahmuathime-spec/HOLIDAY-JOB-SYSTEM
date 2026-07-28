@@ -1,3 +1,4 @@
+// DOM Elements
 const btnStudent = document.getElementById('btnStudent');
 const btnAdmin = document.getElementById('btnAdmin');
 const btnSignUp = document.getElementById('btnSignUp');
@@ -16,15 +17,29 @@ const adminUsernameInput = document.getElementById('adminUsername');
 const passwordInput = document.getElementById('password');
 const togglePasswordBtn = document.getElementById('togglePassword');
 const passwordEyeIcon = document.getElementById('passwordEyeIcon');
+const toggleConfirmPasswordBtn = document.getElementById('toggleConfirmPassword');
+const confirmPasswordEyeIcon = document.getElementById('confirmPasswordEyeIcon');
+
+const form = document.getElementById('authForm');
+const messageBox = document.getElementById('formMessage');
 
 let isAdminMode = false;
 let isSignUpMode = true;
 
-function setSignupRequired(required) {
-  signupFieldEls.forEach(input => { input.required = required; });
-  confirmPasswordInput.required = required;
-}
+// Password visibility toggles
+togglePasswordBtn.addEventListener('click', () => {
+  const type = passwordInput.type === 'password' ? 'text' : 'password';
+  passwordInput.type = type;
+  passwordEyeIcon.className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+});
 
+toggleConfirmPasswordBtn.addEventListener('click', () => {
+  const type = confirmPasswordInput.type === 'password' ? 'text' : 'password';
+  confirmPasswordInput.type = type;
+  confirmPasswordEyeIcon.className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+});
+
+// Mode switching functions
 function setStudentAuthMode(signUp) {
   isSignUpMode = signUp;
   btnSignUp.classList.toggle('active', signUp);
@@ -37,7 +52,10 @@ function setStudentAuthMode(signUp) {
   submitBtn.textContent = signUp ? 'Create Account' : 'Log In';
   loginFullNameInput.required = !signUp;
   adminUsernameInput.required = false;
-  setSignupRequired(signUp);
+  
+  // Set required fields
+  signupFieldEls.forEach(input => { input.required = signUp; });
+  confirmPasswordInput.required = signUp;
 }
 
 function setLoginMode(admin) {
@@ -55,63 +73,73 @@ function setLoginMode(admin) {
     confirmPasswordWrap.style.display = 'none';
     loginFullNameInput.required = false;
     adminUsernameInput.required = true;
-    setSignupRequired(false);
+    signupFieldEls.forEach(input => { input.required = false; });
+    confirmPasswordInput.required = false;
     return;
   }
 
   setStudentAuthMode(isSignUpMode);
 }
 
+// Button event listeners
 btnStudent.addEventListener('click', () => setLoginMode(false));
 btnAdmin.addEventListener('click', () => setLoginMode(true));
 btnSignUp.addEventListener('click', () => setStudentAuthMode(true));
 btnLogIn.addEventListener('click', () => setStudentAuthMode(false));
 
-togglePasswordBtn.addEventListener('click', () => {
-  const type = passwordInput.type === 'password' ? 'text' : 'password';
-  passwordInput.type = type;
-  passwordEyeIcon.className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
-});
-
-const form = document.getElementById('authForm');
-const messageBox = document.getElementById('formMessage');
-
+// Email validation
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-form.addEventListener('submit', function (event) {
+// Main form submission
+form.addEventListener('submit', function(event) {
   event.preventDefault();
   messageBox.textContent = '';
   messageBox.className = 'message';
 
-  const password = document.getElementById('password').value;
+  const password = passwordInput.value;
 
+  // ADMIN LOGIN
   if (isAdminMode) {
     const adminUsername = adminUsernameInput.value.trim();
-    const adminCredUsername = (typeof CONFIG !== 'undefined' && CONFIG.admin) ? CONFIG.admin.username : null;
-    const adminPasswordHash = (typeof CONFIG !== 'undefined' && CONFIG.admin) ? CONFIG.admin.passwordHash : null;
+    const password = passwordInput.value;
 
     if (!adminUsername || !password) {
-      messageBox.textContent = 'Please enter your admin username and password.';
+      messageBox.textContent = 'Please enter both username and password.';
       messageBox.className = 'message error';
       return;
     }
 
-    // Debug logging
-    console.log('Admin Login Attempt:', {
-      inputUsername: adminUsername,
-      configUsername: adminCredUsername,
-      usernameMatch: adminUsername === adminCredUsername,
-      inputPassword: password,
-      inputHash: HJSData.hashValue(password),
-      storedHash: adminPasswordHash,
-      hashMatch: HJSData.hashValue(password) === adminPasswordHash
-    });
+    // Get admin credentials from config
+    let configUsername = null;
+    let configPasswordHash = null;
+    
+    if (typeof CONFIG !== 'undefined' && CONFIG && CONFIG.admin) {
+      configUsername = CONFIG.admin.username;
+      configPasswordHash = CONFIG.admin.passwordHash;
+    }
+    
+    // Fallback to default credentials if config not loaded
+    if (!configUsername || !configPasswordHash) {
+      console.warn('CONFIG not loaded, using fallback credentials');
+      configUsername = 'Admin';
+      configPasswordHash = '185030e4'; // Hash of 'admin123'
+    }
 
-    // Case-insensitive username comparison
-    const usernameMatch = adminUsername.toLowerCase() === adminCredUsername.toLowerCase();
-    const passwordMatch = HJSData.hashValue(password) === adminPasswordHash;
+    console.log('Admin login config check:', { configUsername, configPasswordHash, CONFIG: typeof CONFIG });
+
+    // Check credentials
+    const usernameMatch = adminUsername.toLowerCase() === configUsername.toLowerCase();
+    const passwordHash = HJSData.hashValue(password);
+    const passwordMatch = passwordHash === configPasswordHash;
+
+    console.log('Admin login attempt:', {
+      username: adminUsername,
+      passwordMatch,
+      passwordHash,
+      expectedHash: configPasswordHash
+    });
 
     if (usernameMatch && passwordMatch) {
       HJSData.saveAdminSession({
@@ -119,27 +147,32 @@ form.addEventListener('submit', function (event) {
         expiresAt: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
         username: adminUsername
       });
-      messageBox.textContent = 'Admin login successful. Redirecting...';
+      messageBox.textContent = 'Admin login successful! Redirecting...';
       messageBox.className = 'message success';
-      window.location.href = '../admin/index.html';
+      setTimeout(() => {
+        window.location.href = './admin/index.html';
+      }, 800);
       return;
     }
 
-    messageBox.textContent = 'Incorrect admin username or password.';
+    messageBox.textContent = 'Incorrect username or password.';
     messageBox.className = 'message error';
     return;
   }
 
+  // STUDENT SIGN UP
   if (isSignUpMode) {
     const name = document.getElementById('studentName').value.trim();
     const admissionNumber = document.getElementById('admissionNumber').value.trim();
     const studentForm = document.getElementById('studentForm').value.trim();
     const studentClass = document.getElementById('studentClass').value.trim();
     const email = document.getElementById('studentEmail').value.trim();
-    const confirmPassword = confirmPasswordInput.value;
+    const trimmedPassword = password.trim();
+    const confirmPassword = confirmPasswordInput.value.trim();
 
-    if (!name || !admissionNumber || !studentForm || !studentClass || !email || !password) {
-      messageBox.textContent = 'Please fill in your full name, admission number, form, class, email, and password.';
+    // Validation
+    if (!name || !admissionNumber || !studentForm || !studentClass || !email || !trimmedPassword) {
+      messageBox.textContent = 'Please fill in all fields.';
       messageBox.className = 'message error';
       return;
     }
@@ -150,25 +183,27 @@ form.addEventListener('submit', function (event) {
       return;
     }
 
-    if (password.length < 6) {
-      messageBox.textContent = 'Password must be at least 6 characters long.';
+    if (trimmedPassword.length < 6) {
+      messageBox.textContent = 'Password must be at least 6 characters.';
       messageBox.className = 'message error';
       return;
     }
 
-    if (password !== confirmPassword) {
-      messageBox.textContent = 'Passwords do not match.';
+    if (trimmedPassword !== confirmPassword) {
+      messageBox.textContent = 'Passwords do not match. Please try again.';
       messageBox.className = 'message error';
+      console.log('Password mismatch:', { password: trimmedPassword, confirm: confirmPassword });
       return;
     }
 
+    // Register student
     const result = HJSData.registerStudent({
       name,
       admissionNumber,
       form: studentForm,
       studentClass,
       email,
-      password
+      password: trimmedPassword
     });
 
     messageBox.textContent = result.message;
@@ -176,19 +211,22 @@ form.addEventListener('submit', function (event) {
 
     if (result.ok) {
       form.reset();
-      setTimeout(() => setStudentAuthMode(false), 1200);
+      setTimeout(() => setStudentAuthMode(false), 1500);
     }
     return;
   }
 
+  // STUDENT LOGIN
   const identifier = loginFullNameInput.value.trim();
-  if (!identifier || !password) {
-    messageBox.textContent = 'Please enter your email or full name and password.';
+  const loginPassword = passwordInput.value;
+
+  if (!identifier || !loginPassword) {
+    messageBox.textContent = 'Please enter your email/full name and password.';
     messageBox.className = 'message error';
     return;
   }
 
-  const result = HJSData.loginStudent(identifier, password);
+  const result = HJSData.loginStudent(identifier, loginPassword);
   if (!result.ok) {
     messageBox.textContent = result.message;
     messageBox.className = 'message error';
@@ -201,9 +239,13 @@ form.addEventListener('submit', function (event) {
     admissionNumber: result.student.admissionNumber,
     email: result.student.email
   });
-  messageBox.textContent = 'Login successful. Redirecting...';
+
+  messageBox.textContent = 'Login successful! Redirecting...';
   messageBox.className = 'message success';
-  window.location.href = '../student/index.html';
+  setTimeout(() => {
+    window.location.href = './student/index.html';
+  }, 800);
 });
 
+// Initialize
 setStudentAuthMode(true);

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Complete App Reset</title>
+  <script src="data.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 { color: #333; }
+    .section {
+      margin: 20px 0;
+      padding: 15px;
+      background: #f9f9f9;
+      border-left: 4px solid #007bff;
+    }
+    .success { color: #28a745; font-weight: bold; }
+    .error { color: #dc3545; font-weight: bold; }
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover { background: #0056b3; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔄 Complete Application Reset</h1>
+    <p>This will reset ALL data including localStorage and server database.</p>
+
+    <div class="section">
+      <h3>Step 1: Clear Frontend Data (localStorage)</h3>
+      <button onclick="clearFrontendData()">Clear Frontend Data</button>
+      <div id="frontendResult"></div>
+    </div>
+
+    <div class="section">
+      <h3>Step 2: Reset Server Database</h3>
+      <button onclick="resetServerData()">Reset Server Database</button>
+      <div id="serverResult"></div>
+    </div>
+
+    <div class="section">
+      <h3>Step 3: Verify Admin Credentials</h3>
+      <button onclick="verifyAdminHash()">Test Admin Password Hash</button>
+      <div id="hashResult"></div>
+    </div>
+
+    <div class="section">
+      <h3>Step 4: Complete Reset</h3>
+      <button onclick="completeReset()" style="background: #dc3545;">🚨 RESET EVERYTHING</button>
+      <div id="resetResult"></div>
+    </div>
+  </div>
+
+  <script>
+    function clearFrontendData() {
+      try {
+        HJSData.clearAdminSession();
+        HJSData.clearStudentSession();
+        localStorage.clear();
+        document.getElementById('frontendResult').innerHTML = '<p class="success">✓ Frontend data cleared successfully!</p>';
+        console.log('Frontend data cleared');
+      } catch (error) {
+        document.getElementById('frontendResult').innerHTML = `<p class="error">✗ Error: ${error.message}</p>`;
+      }
+    }
+
+    async function resetServerData() {
+      try {
+        const response = await fetch('http://localhost:3000/api/admin/reset', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        
+        if (response.ok) {
+          document.getElementById('serverResult').innerHTML = '<p class="success">✓ Server database reset successfully!</p>';
+        } else {
+          document.getElementById('serverResult').innerHTML = '<p class="error">✗ Server not running or reset failed</p>';
+        }
+      } catch (error) {
+        document.getElementById('serverResult').innerHTML = `<p class="error">✗ Cannot connect to server: ${error.message}</p>`;
+      }
+    }
+
+    function verifyAdminHash() {
+      const password = 'admin123';
+      const hash = HJSData.hashValue(password);
+      const expectedHash = '185030e4';
+      const match = hash === expectedHash;
+      
+      document.getElementById('hashResult').innerHTML = `
+        <p>Password: <strong>${password}</strong></p>
+        <p>Generated Hash: <strong>${hash}</strong></p>
+        <p>Expected Hash: <strong>${expectedHash}</strong></p>
+        <p class="${match ? 'success' : 'error'}">${match ? '✓ Hashes match!' : '✗ Hashes do not match'}</p>
+      `;
+    }
+
+    async function completeReset() {
+      if (!confirm('This will delete ALL data. Are you sure?')) return;
+      
+      clearFrontendData();
+      await resetServerData();
+      
+      document.getElementById('resetResult').innerHTML = `
+        <p class="success">✓ Complete reset finished!</p>
+        <p>You can now close this page and start fresh.</p>
+      `;
+    }
+  </script>
+</body>
+</html>

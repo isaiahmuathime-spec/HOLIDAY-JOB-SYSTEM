@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Test Hash</title>
+  <script src="data.js"></script>
+</head>
+<body>
+  <h1>Hash Test</h1>
+  <div id="result"></div>
+  <script>
+    const testPassword = 'admin123';
+    const hash = HJSData.hashValue(testPassword);
+    document.getElementById('result').innerHTML = `
+      <p>Password: ${testPassword}</p>
+      <p>Generated Hash: ${hash}</p>
+      <p>Expected Hash (from config): 185030e4</p>
+      <p>Match: ${hash === '185030e4' ? 'YES ✓' : 'NO ✗'}</p>
+    `;
+    console.log('Hash test:', { password: testPassword, hash, expected: '185030e4', match: hash === '185030e4' });
+  </script>
+</body>
+</html>

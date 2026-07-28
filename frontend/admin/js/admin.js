@@ -18,7 +18,7 @@ function updateThemeIcon(theme) {
 
 function logout() {
   HJSData.clearAdminSession();
-  window.location.href = '../LoginHJS.html';
+  window.location.href = './LoginHJS.html';
 }
 
 function renderStats() {

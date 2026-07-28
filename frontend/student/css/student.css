@@ -81,7 +81,7 @@ body {
 /* Hero Section */
 .hero {
   background: linear-gradient(135deg, rgba(30, 58, 138, 0.95) 0%, rgba(15, 37, 87, 0.95) 100%),
-              url('../images/randb.webp') center/cover no-repeat;
+              url('./images/randb.webp') center/cover no-repeat;
   height: 70vh;
   display: flex;
   align-items: center;

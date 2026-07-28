@@ -7,15 +7,23 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
-  <script src="../config.js"></script>
-  <script src="../data.js"></script>
+  <script src="./config.js"></script>
+  <script src="./data.js"></script>
+  <script>
+    // Debug: Check if CONFIG is loaded
+    console.log('CONFIG loaded:', typeof CONFIG !== 'undefined' ? 'Yes' : 'No');
+    if (CONFIG && CONFIG.admin) {
+      console.log('Admin username:', CONFIG.admin.username);
+      console.log('Admin passwordHash:', CONFIG.admin.passwordHash);
+    }
+  </script>
   <link rel="stylesheet" href="css/auth.css">
 </head>
 <body>
   <div class="top-bar">
     <div class="brand">
       <div class="logo-box">
-        <img src="../images/starehe logo.jpg" alt="Starehe Logo">
+        <img src="./images/starehe logo.jpg" alt="Starehe Logo">
       </div>
       <h1>Holiday Job</h1>
     </div>
@@ -99,7 +107,12 @@
 
       <div class="mb-3" id="confirmPasswordWrap">
         <label class="form-label">Confirm Password</label>
-        <input type="password" class="form-control" id="confirmPassword" placeholder="Re-enter password">
+        <div class="input-group">
+          <input type="password" class="form-control" id="confirmPassword" placeholder="Re-enter password">
+          <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword" title="Show/Hide Password">
+            <i class="fas fa-eye" id="confirmPasswordEyeIcon"></i>
+          </button>
+        </div>
       </div>
 
       <button type="submit" class="btn btn-info" id="submitBtn">Create Account</button>
@@ -108,6 +121,6 @@
     <div id="formMessage" class="message" role="alert"></div>
   </div>
 
-  <script src="js/auth.js"></script>
+  <script src="js/auth-fixed.js"></script>
 </body>
 </html>

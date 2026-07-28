@@ -2,11 +2,13 @@ const express = require('express');
 const authRoutes = require('./auth');
 const jobRoutes = require('./jobs');
 const applicationRoutes = require('./applications');
+const adminRoutes = require('./admin');
 
 const router = express.Router();
 
 router.use('/auth', authRoutes);
 router.use('/jobs', jobRoutes);
 router.use('/applications', applicationRoutes);
+router.use('/admin', adminRoutes);
 
 module.exports = router;

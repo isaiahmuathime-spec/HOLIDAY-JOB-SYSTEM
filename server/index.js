@@ -2,9 +2,10 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
+const connectDatabase = require('./config/database');
 const apiRouter = require('./routes/api');
 
-const requiredEnv = ['JWT_SECRET', 'ADMIN_SIGNUP_SECRET'];
+const requiredEnv = ['JWT_SECRET', 'ADMIN_SIGNUP_SECRET', 'MONGODB_URI'];
 const missingEnv = requiredEnv.filter((key) => !process.env[key]);
 if (missingEnv.length > 0) {
   throw new Error(`Missing required environment variables: ${missingEnv.join(', ')}`);
@@ -13,6 +14,9 @@ if (missingEnv.length > 0) {
 const app = express();
 const PORT = process.env.PORT || 3000;
 const corsOptions = process.env.CORS_ORIGIN ? { origin: process.env.CORS_ORIGIN } : undefined;
+
+// Connect to MongoDB
+connectDatabase();
 
 app.disable('x-powered-by');
 app.use(cors(corsOptions));
@@ -39,7 +43,12 @@ app.use((req, res, next) => {
 });
 
 app.use('/api', apiRouter);
-app.use(express.static(path.join(__dirname, '..'), { dotfiles: 'ignore', index: false }));
+app.use(express.static(path.join(__dirname, '..', 'frontend'), { dotfiles: 'ignore', index: false }));
+
+// Serve index.html for root path
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
+});
 
 app.use((err, req, res, next) => {
   console.error(err);
