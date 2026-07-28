@@ -45,9 +45,9 @@ app.use((req, res, next) => {
 app.use('/api', apiRouter);
 app.use(express.static(path.join(__dirname, '..', 'frontend'), { dotfiles: 'ignore', index: false }));
 
-// Serve index.html for root path
+// Serve auth page for root path
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
+  res.sendFile(path.join(__dirname, '..', 'frontend', 'auth', 'index.html'));
 });
 
 app.use((err, req, res, next) => {

@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="col-md-4">
           <div class="job-card">
             <div class="job-card-image">
-               <img src="${imgSrc}" alt="${job.title}" onerror="this.src='./images/starehe logo.jpg'">
+               <img src="${imgSrc}" alt="${job.title}" onerror="this.src='../images/starehe logo.jpg'">
               <span class="job-card-badge ${full ? 'full' : 'open'}">
                 <i class="fas ${full ? 'fa-times-circle' : 'fa-check-circle'} me-1"></i>
                 ${full ? 'Fully Booked' : 'Open'}

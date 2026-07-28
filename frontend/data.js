@@ -9,43 +9,43 @@ const HJSData = (() => {
   };
 
   const DEFAULT_JOBS = [
-    { id: 'bungoma-county', title: 'Bungoma County Offices', organization: 'Bungoma County', description: 'Administrative support and public service experience at county offices.', totalSpots: 5, filledSpots: 0, image: './images/Bungoma County Offices.jpg', dates: '04/04/2026 - 14/04/2026' },
-    { id: 'kenyatta-hospital', title: 'Kenyatta Hospital', organization: 'Kenyatta National Hospital', description: 'Clinical and hospital support roles for aspiring medical professionals.', totalSpots: 5, filledSpots: 0, image: './images/KNH.jpg', dates: '04/04/2026 - 14/04/2026' },
-    { id: 'milimani-courts', title: 'Milimani Law Courts', organization: 'Milimani Law Courts', description: 'Observe legal proceedings and assist with court administration.', totalSpots: 5, filledSpots: 0, image: './images/Milimani Law Courts.jpg', dates: '04/04/2026 - 14/04/2026' },
-    { id: 'siaya-county', title: 'Siaya County Offices', organization: 'Siaya County', description: 'County government placement for civic and administrative learning.', totalSpots: 5, filledSpots: 0, image: './images/Siaya County Offices.jpg', dates: '04/04/2026 - 14/04/2026' },
-    { id: 'kajiado-hospital', title: 'Kajiado County Mission Hospital', organization: 'Kajiado County Mission Hospital', description: 'Healthcare support placement in a mission hospital setting.', totalSpots: 5, filledSpots: 0, image: './images/KCMH.jpg', dates: '04/04/2026 - 14/04/2026' },
-    { id: 'parliament', title: 'Parliament Of Kenya', organization: 'Parliament of Kenya', description: 'Legislative process exposure and parliamentary office support.', totalSpots: 5, filledSpots: 0, image: './images/Parliament.jpg', dates: '04/04/2026 - 14/04/2026' },
-    { id: 'archives', title: 'National Archives', organization: 'Kenya National Archives', description: 'Preservation and cataloguing of national historical records.', totalSpots: 5, filledSpots: 0, image: './images/Archives.jpg', dates: '04/04/2026 - 14/04/2026' },
-    { id: 'garissa-county', title: 'Garissa County Government Offices', organization: 'Garissa County', description: 'Public administration and community service at county level.', totalSpots: 5, filledSpots: 0, image: './images/Garissa County.jpg', dates: '04/04/2026 - 14/04/2026' },
-    { id: 'wilson-airport', title: 'Wilson Airport', organization: 'Wilson Airport', description: 'Aviation operations and airport administration experience.', totalSpots: 5, filledSpots: 0, image: './images/wilson airrport.jpg', dates: '04/04/2026 - 14/04/2026' },
-    { id: 'kisumu-court', title: 'Kisumu County Law Court', organization: 'Kisumu County Law Court', description: 'Judicial process observation and court clerk assistance.', totalSpots: 5, filledSpots: 0, image: './images/kisumu.jpg', dates: '04/04/2026 - 14/04/2026' },
-    { id: 'national-library', title: 'National Library', organization: 'Kenya National Library Service', description: 'Library science, cataloguing, and public information services.', totalSpots: 5, filledSpots: 0, image: './images/National library.jpg', dates: '04/04/2026 - 14/04/2026' },
-    { id: 'kws', title: 'Kenya Wild Life Offices', organization: 'Kenya Wildlife Service', description: 'Conservation, wildlife management, and environmental education.', totalSpots: 5, filledSpots: 0, image: './images/KWS.jpg', dates: '04/04/2026 - 14/04/2026' }
+    { id: 'bungoma-county', title: 'Bungoma County Offices', organization: 'Bungoma County', description: 'Administrative support and public service experience at county offices.', totalSpots: 5, filledSpots: 0, image: '../images/Bungoma County Offices.jpg', dates: '04/04/2026 - 14/04/2026' },
+    { id: 'kenyatta-hospital', title: 'Kenyatta Hospital', organization: 'Kenyatta National Hospital', description: 'Clinical and hospital support roles for aspiring medical professionals.', totalSpots: 5, filledSpots: 0, image: '../images/KNH.jpg', dates: '04/04/2026 - 14/04/2026' },
+    { id: 'milimani-courts', title: 'Milimani Law Courts', organization: 'Milimani Law Courts', description: 'Observe legal proceedings and assist with court administration.', totalSpots: 5, filledSpots: 0, image: '../images/Milimani Law Courts.jpg', dates: '04/04/2026 - 14/04/2026' },
+    { id: 'siaya-county', title: 'Siaya County Offices', organization: 'Siaya County', description: 'County government placement for civic and administrative learning.', totalSpots: 5, filledSpots: 0, image: '../images/Siaya County Offices.jpg', dates: '04/04/2026 - 14/04/2026' },
+    { id: 'kajiado-hospital', title: 'Kajiado County Mission Hospital', organization: 'Kajiado County Mission Hospital', description: 'Healthcare support placement in a mission hospital setting.', totalSpots: 5, filledSpots: 0, image: '../images/KCMH.jpg', dates: '04/04/2026 - 14/04/2026' },
+    { id: 'parliament', title: 'Parliament Of Kenya', organization: 'Parliament of Kenya', description: 'Legislative process exposure and parliamentary office support.', totalSpots: 5, filledSpots: 0, image: '../images/Parliament.jpg', dates: '04/04/2026 - 14/04/2026' },
+    { id: 'archives', title: 'National Archives', organization: 'Kenya National Archives', description: 'Preservation and cataloguing of national historical records.', totalSpots: 5, filledSpots: 0, image: '../images/Archives.jpg', dates: '04/04/2026 - 14/04/2026' },
+    { id: 'garissa-county', title: 'Garissa County Government Offices', organization: 'Garissa County', description: 'Public administration and community service at county level.', totalSpots: 5, filledSpots: 0, image: '../images/Garissa County.jpg', dates: '04/04/2026 - 14/04/2026' },
+    { id: 'wilson-airport', title: 'Wilson Airport', organization: 'Wilson Airport', description: 'Aviation operations and airport administration experience.', totalSpots: 5, filledSpots: 0, image: '../images/wilson airrport.jpg', dates: '04/04/2026 - 14/04/2026' },
+    { id: 'kisumu-court', title: 'Kisumu County Law Court', organization: 'Kisumu County Law Court', description: 'Judicial process observation and court clerk assistance.', totalSpots: 5, filledSpots: 0, image: '../images/kisumu.jpg', dates: '04/04/2026 - 14/04/2026' },
+    { id: 'national-library', title: 'National Library', organization: 'Kenya National Library Service', description: 'Library science, cataloguing, and public information services.', totalSpots: 5, filledSpots: 0, image: '../images/National library.jpg', dates: '04/04/2026 - 14/04/2026' },
+    { id: 'kws', title: 'Kenya Wild Life Offices', organization: 'Kenya Wildlife Service', description: 'Conservation, wildlife management, and environmental education.', totalSpots: 5, filledSpots: 0, image: '../images/KWS.jpg', dates: '04/04/2026 - 14/04/2026' }
   ];
 
   const ASSET_DICTIONARY = {
-    'Bungoma County Offices': './images/Bungoma County Offices.jpg',
-    'Kenyatta Hospital': './images/KNH.jpg',
-    'Kenyatta National Hospital': './images/KNH.jpg',
-    'Milimani Law Courts': './images/Milimani Law Courts.jpg',
-    'Siaya County Offices': './images/Siaya County Offices.jpg',
-    'Kajiado County Mission Hospital': './images/KCMH.jpg',
-    'Parliament Of Kenya': './images/Parliament.jpg',
-    'Parliament of Kenya': './images/Parliament.jpg',
-    'National Archives': './images/Archives.jpg',
-    'Kenya National Archives': './images/Archives.jpg',
-    'Garissa County Government Offices': './images/Garissa County.jpg',
-    'Garissa County': './images/Garissa County.jpg',
-    'Wilson Airport': './images/wilson airrport.jpg',
-    'Kisumu County Law Court': './images/kisumu.jpg',
-    'National Library': './images/National library.jpg',
-    'Kenya National Library Service': './images/National library.jpg',
-    'Kenya Wild Life Offices': './images/KWS.jpg',
-    'Kenya Wildlife Service': './images/KWS.jpg',
-    'Safaricom': './images/starehe logo.jpg',
-    'Equity Bank': './images/starehe logo.jpg',
-    'KRA': './images/starehe logo.jpg',
-    'fallback': './images/starehe logo.jpg'
+    'Bungoma County Offices': '../images/Bungoma County Offices.jpg',
+    'Kenyatta Hospital': '../images/KNH.jpg',
+    'Kenyatta National Hospital': '../images/KNH.jpg',
+    'Milimani Law Courts': '../images/Milimani Law Courts.jpg',
+    'Siaya County Offices': '../images/Siaya County Offices.jpg',
+    'Kajiado County Mission Hospital': '../images/KCMH.jpg',
+    'Parliament Of Kenya': '../images/Parliament.jpg',
+    'Parliament of Kenya': '../images/Parliament.jpg',
+    'National Archives': '../images/Archives.jpg',
+    'Kenya National Archives': '../images/Archives.jpg',
+    'Garissa County Government Offices': '../images/Garissa County.jpg',
+    'Garissa County': '../images/Garissa County.jpg',
+    'Wilson Airport': '../images/wilson airrport.jpg',
+    'Kisumu County Law Court': '../images/kisumu.jpg',
+    'National Library': '../images/National library.jpg',
+    'Kenya National Library Service': '../images/National library.jpg',
+    'Kenya Wild Life Offices': '../images/KWS.jpg',
+    'Kenya Wildlife Service': '../images/KWS.jpg',
+    'Safaricom': '../images/starehe logo.jpg',
+    'Equity Bank': '../images/starehe logo.jpg',
+    'KRA': '../images/starehe logo.jpg',
+    'fallback': '../images/starehe logo.jpg'
   };
 
   function getJobImage(companyName) {
@@ -144,11 +144,30 @@ const HJSData = (() => {
     localStorage.removeItem('hjs_enrollments');
   }
 
+  function migrateJobImagePaths() {
+    const jobs = getJobs();
+    let needsUpdate = false;
+    
+    const updatedJobs = jobs.map(job => {
+      if (job.image && job.image.startsWith('./images/')) {
+        needsUpdate = true;
+        return { ...job, image: job.image.replace('./images/', '../images/') };
+      }
+      return job;
+    });
+    
+    if (needsUpdate) {
+      saveJobs(updatedJobs);
+      console.log('Job image paths migrated to new format');
+    }
+  }
+
   function initJobs() {
     if (!read(KEYS.jobs)) {
       write(KEYS.jobs, DEFAULT_JOBS);
     }
     migrateLegacyEnrollments();
+    migrateJobImagePaths();
   }
 
   function getJobs() {
