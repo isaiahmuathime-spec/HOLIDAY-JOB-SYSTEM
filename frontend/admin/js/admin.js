@@ -18,7 +18,7 @@ function updateThemeIcon(theme) {
 
 function logout() {
   HJSData.clearAdminSession();
-  window.location.href = './auth/index.html';
+  window.location.href = '../auth/index.html';
 }
 
 function renderStats() {
@@ -166,6 +166,45 @@ function renderAll() {
   renderReviewQueue();
   renderHistory();
 }
+
+document.getElementById('adminCredentialsForm').addEventListener('submit', (event) => {
+  event.preventDefault();
+
+  const currentPassword = document.getElementById('currentAdminPassword').value;
+  const newUsername = document.getElementById('newAdminUsername').value.trim();
+  const newPassword = document.getElementById('newAdminPassword').value;
+  const confirmPassword = document.getElementById('confirmAdminPassword').value;
+  const message = document.getElementById('adminCredentialsMessage');
+  const credentials = HJSData.getAdminCredentials();
+
+  message.className = 'small text-danger';
+  if (HJSData.hashValue(currentPassword) !== credentials.passwordHash) {
+    message.textContent = 'Current password is incorrect.';
+    return;
+  }
+  if (newUsername.length < 3) {
+    message.textContent = 'Username must be at least 3 characters.';
+    return;
+  }
+  if (newPassword.length < 6) {
+    message.textContent = 'New password must be at least 6 characters.';
+    return;
+  }
+  if (newPassword !== confirmPassword) {
+    message.textContent = 'The new passwords do not match.';
+    return;
+  }
+
+  HJSData.saveAdminCredentials(newUsername, newPassword);
+  const session = HJSData.getAdminSession();
+  if (session) {
+    session.username = newUsername;
+    HJSData.saveAdminSession(session);
+  }
+  event.target.reset();
+  message.className = 'small text-success';
+  message.textContent = 'Admin account updated successfully.';
+});
 
 function escapeHtml(str) {
   if (!str) return '';

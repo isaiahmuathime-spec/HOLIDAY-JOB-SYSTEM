@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Admin Dashboard - Holiday Job</title>
 
-  <script src="./data.js"></script>
+  <script src="../data.js"></script>
   <script>
     if (!HJSData.isSessionValid(HJSData.getAdminSession())) {
-      window.location.replace('./auth/index.html');
+      window.location.replace('../auth/index.html');
     }
   </script>
 
@@ -62,6 +62,37 @@
           <div class="stat-value" id="statBooked">0</div>
           <p class="stat-label">Fully Booked Placements</p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mb-5">
+    <h4 class="section-title"><i class="fas fa-user-shield"></i> Admin Account</h4>
+    <div class="glass-card">
+      <div class="card-header"><i class="fas fa-key me-2"></i>Change username or password</div>
+      <div class="card-body p-3">
+        <form id="adminCredentialsForm" class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label" for="currentAdminPassword">Current password</label>
+            <input type="password" class="form-control" id="currentAdminPassword" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="newAdminUsername">New username</label>
+            <input type="text" class="form-control" id="newAdminUsername" minlength="3" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="newAdminPassword">New password</label>
+            <input type="password" class="form-control" id="newAdminPassword" minlength="6" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="confirmAdminPassword">Confirm new password</label>
+            <input type="password" class="form-control" id="confirmAdminPassword" minlength="6" required>
+          </div>
+          <div class="col-md-8 d-flex align-items-end gap-3">
+            <button type="submit" class="btn btn-accent"><i class="fas fa-save me-1"></i>Save account changes</button>
+            <span id="adminCredentialsMessage" class="small" role="alert"></span>
+          </div>
+        </form>
       </div>
     </div>
   </section>

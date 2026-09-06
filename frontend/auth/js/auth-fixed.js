@@ -111,35 +111,14 @@ form.addEventListener('submit', function(event) {
       return;
     }
 
-    // Get admin credentials from config
-    let configUsername = null;
-    let configPasswordHash = null;
-    
-    if (typeof CONFIG !== 'undefined' && CONFIG && CONFIG.admin) {
-      configUsername = CONFIG.admin.username;
-      configPasswordHash = CONFIG.admin.passwordHash;
-    }
-    
-    // Fallback to default credentials if config not loaded
-    if (!configUsername || !configPasswordHash) {
-      console.warn('CONFIG not loaded, using fallback credentials');
-      configUsername = 'Admin';
-      configPasswordHash = '185030e4'; // Hash of 'admin123'
-    }
-
-    console.log('Admin login config check:', { configUsername, configPasswordHash, CONFIG: typeof CONFIG });
+    const credentials = HJSData.getAdminCredentials();
+    const configUsername = credentials.username;
+    const configPasswordHash = credentials.passwordHash;
 
     // Check credentials
     const usernameMatch = adminUsername.toLowerCase() === configUsername.toLowerCase();
     const passwordHash = HJSData.hashValue(password);
     const passwordMatch = passwordHash === configPasswordHash;
-
-    console.log('Admin login attempt:', {
-      username: adminUsername,
-      passwordMatch,
-      passwordHash,
-      expectedHash: configPasswordHash
-    });
 
     if (usernameMatch && passwordMatch) {
       HJSData.saveAdminSession({
@@ -150,7 +129,7 @@ form.addEventListener('submit', function(event) {
       messageBox.textContent = 'Admin login successful! Redirecting...';
       messageBox.className = 'message success';
       setTimeout(() => {
-        window.location.href = './admin/index.html';
+        window.location.href = '../admin/index.html';
       }, 800);
       return;
     }
@@ -243,7 +222,7 @@ form.addEventListener('submit', function(event) {
   messageBox.textContent = 'Login successful! Redirecting...';
   messageBox.className = 'message success';
   setTimeout(() => {
-    window.location.href = './student/index.html';
+    window.location.href = '../student/index.html';
   }, 800);
 });
 

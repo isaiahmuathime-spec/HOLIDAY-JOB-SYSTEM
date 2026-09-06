@@ -4,6 +4,7 @@ const HJSData = (() => {
     applications: 'hjs_applications',
     studentProfile: 'hjs_student_profile',
     students: 'hjs_students',
+    adminCredentials: 'hjs_admin_credentials',
     adminSession: 'hjs_admin_session',
     studentSession: 'hjs_student_session'
   };
@@ -48,6 +49,8 @@ const HJSData = (() => {
     'fallback': '../images/starehe logo.jpg'
   };
 
+  let jobsInitialized = false;
+
   function getJobImage(companyName) {
     if (!companyName) return ASSET_DICTIONARY.fallback;
     const normalized = companyName.trim();
@@ -81,6 +84,25 @@ const HJSData = (() => {
       hash = ((hash << 5) + hash) + str.charCodeAt(i);
     }
     return (hash >>> 0).toString(16);
+  }
+
+  function getAdminCredentials() {
+    const saved = read(KEYS.adminCredentials);
+    if (saved && saved.username && saved.passwordHash) return saved;
+
+    return {
+      username: 'Admin',
+      passwordHash: '185030e4'
+    };
+  }
+
+  function saveAdminCredentials(username, password) {
+    const credentials = {
+      username: username.trim(),
+      passwordHash: hashValue(password)
+    };
+    write(KEYS.adminCredentials, credentials);
+    return credentials;
   }
 
   function getAdminSession() {
@@ -163,6 +185,8 @@ const HJSData = (() => {
   }
 
   function initJobs() {
+    if (jobsInitialized) return;
+    jobsInitialized = true;
     if (!read(KEYS.jobs)) {
       write(KEYS.jobs, DEFAULT_JOBS);
     }
@@ -463,7 +487,10 @@ const HJSData = (() => {
     getStudentSession,
     saveStudentSession,
     clearStudentSession,
+    getAdminCredentials,
+    saveAdminCredentials,
     isSessionValid,
+    generateId,
     hashValue,
     updateJob,
     updateJobSpots,
