@@ -86,11 +86,17 @@ function renderJobs() {
 }
 
 function renderReviewQueue() {
-  const pending = HJSData.getPendingApplications();
+  const query = document.getElementById('applicationSearch').value.trim().toLowerCase();
+  const status = document.getElementById('applicationStatus').value;
+  const applications = HJSData.getApplications().filter(app => {
+    const matchesStatus = status === 'all' || app.status === status;
+    const searchable = `${app.studentName} ${app.admissionNumber} ${app.jobTitle} ${app.email || ''}`.toLowerCase();
+    return matchesStatus && searchable.includes(query);
+  });
   const container = document.getElementById('reviewQueue');
-  document.getElementById('queueCountBadge').textContent = `${pending.length} pending`;
+  document.getElementById('queueCountBadge').textContent = `${applications.length} shown`;
 
-  if (!pending.length) {
+  if (!applications.length) {
     container.innerHTML = `
       <div class="empty-state">
         <i class="fas fa-inbox fa-3x mb-3"></i>
@@ -101,7 +107,7 @@ function renderReviewQueue() {
     return;
   }
 
-  container.innerHTML = pending.map(app => `
+  container.innerHTML = applications.map(app => `
     <div class="queue-item" id="queue-${app.id}">
       <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
         <div>
@@ -119,15 +125,8 @@ function renderReviewQueue() {
       <div class="conduct-box">
         <i class="fas fa-clipboard-check me-1"></i>${escapeHtml(app.conductRecord)}
       </div>
-      <textarea class="form-control form-control-sm mb-2" id="notes-${app.id}" rows="2" placeholder="Add notes to justify your decision (optional)...">${escapeHtml(app.adminNotes)}</textarea>
-      <div class="d-flex gap-2">
-        <button class="btn btn-approve flex-fill" onclick="approveApp('${app.id}')">
-          <i class="fas fa-check me-1"></i> Approve
-        </button>
-        <button class="btn btn-decline flex-fill" onclick="declineApp('${app.id}')">
-          <i class="fas fa-times me-1"></i> Decline
-        </button>
-      </div>
+      ${app.status === 'pending' ? `<textarea class="form-control form-control-sm mb-2" id="notes-${app.id}" rows="2" placeholder="Add notes to justify your decision (optional)...">${escapeHtml(app.adminNotes)}</textarea>
+      <div class="d-flex gap-2"><button class="btn btn-approve flex-fill" onclick="approveApp('${app.id}')"><i class="fas fa-check me-1"></i> Approve</button><button class="btn btn-decline flex-fill" onclick="declineApp('${app.id}')"><i class="fas fa-times me-1"></i> Decline</button></div>` : `<div class="d-flex justify-content-between align-items-center"><span class="status-${app.status}">${app.status}</span><button class="btn btn-sm btn-outline-secondary" onclick="reopenApp('${app.id}')"><i class="fas fa-undo me-1"></i> Reopen</button></div>`}
     </div>
   `).join('');
 }
@@ -165,6 +164,46 @@ function renderAll() {
   renderJobs();
   renderReviewQueue();
   renderHistory();
+  renderStudents();
+  renderAuditLog();
+}
+
+function renderStudents() {
+  const query = document.getElementById('studentSearch').value.trim().toLowerCase();
+  const students = HJSData.getStudents().filter(student =>
+    `${student.name} ${student.admissionNumber} ${student.email}`.toLowerCase().includes(query)
+  );
+  const tbody = document.getElementById('studentsBody');
+  tbody.innerHTML = students.length ? students.map(student => `
+    <tr><td>${escapeHtml(student.name)}</td><td>${escapeHtml(student.admissionNumber)}</td><td>${escapeHtml(student.form)}</td><td>${escapeHtml(student.studentClass)}</td><td>${escapeHtml(student.email)}</td><td><button class="btn btn-sm btn-outline-secondary" onclick="viewStudent('${encodeURIComponent(student.admissionNumber)}')"><i class="fas fa-eye me-1"></i>View</button></td></tr>
+  `).join('') : '<tr><td colspan="6" class="text-center py-3 text-muted">No students found.</td></tr>';
+}
+
+function viewStudent(encodedAdmissionNumber) {
+  const admissionNumber = decodeURIComponent(encodedAdmissionNumber);
+  const student = HJSData.getStudents().find(item => item.admissionNumber === admissionNumber);
+  if (!student) return;
+  const applications = HJSData.getApplications().filter(item => item.admissionNumber === admissionNumber);
+  alert(`Name: ${student.name}\nAdmission: ${student.admissionNumber}\nForm: ${student.form}\nClass: ${student.studentClass}\nEmail: ${student.email}\nApplications: ${applications.length}`);
+}
+
+function renderAuditLog() {
+  const entries = HJSData.getAuditLog();
+  document.getElementById('auditBody').innerHTML = entries.length ? entries.slice(0, 50).map(entry => `
+    <tr><td>${escapeHtml(entry.createdAt)}</td><td>${escapeHtml(entry.username)}</td><td>${escapeHtml(entry.action)}</td><td>${escapeHtml(entry.detail)}</td></tr>
+  `).join('') : '<tr><td colspan="4" class="text-center py-3 text-muted">No activity recorded yet.</td></tr>';
+}
+
+function exportApplications() {
+  const applications = HJSData.getApplications();
+  const headers = ['Student', 'Admission Number', 'Form', 'Class', 'Job', 'Status', 'Applied At', 'Decided At', 'Admin Notes'];
+  const values = applications.map(app => [app.studentName, app.admissionNumber, app.form, app.studentClass, app.jobTitle, app.status, app.appliedAt, app.decidedAt || '', app.adminNotes]);
+  const csv = [headers, ...values].map(row => row.map(value => `"${String(value || '').replaceAll('"', '""')}"`).join(',')).join('\n');
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+  link.download = 'holiday-job-applications.csv';
+  link.click();
+  URL.revokeObjectURL(link.href);
 }
 
 document.getElementById('adminCredentialsForm').addEventListener('submit', (event) => {
@@ -220,7 +259,8 @@ document.getElementById('addJobForm').addEventListener('submit', (e) => {
     organization: document.getElementById('jobOrg').value,
     description: document.getElementById('jobDesc').value,
     dates: document.getElementById('jobDates').value,
-    totalSpots: document.getElementById('jobSpots').value
+    totalSpots: document.getElementById('jobSpots').value,
+    image: document.getElementById('jobImage').value
   });
   e.target.reset();
   document.getElementById('jobSpots').value = 5;
@@ -243,6 +283,7 @@ function openEditJobModal(jobId) {
   document.getElementById('editJobDesc').value = job.description;
   document.getElementById('editJobDates').value = job.dates || '';
   document.getElementById('editJobSpots').value = job.totalSpots;
+  document.getElementById('editJobImage').value = job.image || '';
 
   const modal = new bootstrap.Modal(document.getElementById('editJobModal'));
   modal.show();
@@ -270,7 +311,8 @@ if (editJobForm) {
       organization: document.getElementById('editJobOrg').value,
       description: document.getElementById('editJobDesc').value,
       dates: document.getElementById('editJobDates').value,
-      totalSpots: document.getElementById('editJobSpots').value
+      totalSpots: document.getElementById('editJobSpots').value,
+      image: document.getElementById('editJobImage').value
     });
 
     if (!result.ok) {
@@ -304,5 +346,19 @@ function declineApp(appId) {
   }
   renderAll();
 }
+
+function reopenApp(appId) {
+  const result = HJSData.reopenApplication(appId);
+  if (!result.ok) {
+    alert(result.message);
+    return;
+  }
+  renderAll();
+}
+
+document.getElementById('applicationSearch').addEventListener('input', renderReviewQueue);
+document.getElementById('applicationStatus').addEventListener('change', renderReviewQueue);
+document.getElementById('studentSearch').addEventListener('input', renderStudents);
+document.getElementById('exportApplications').addEventListener('click', exportApplications);
 
 renderAll();

@@ -5,6 +5,8 @@ const HJSData = (() => {
     studentProfile: 'hjs_student_profile',
     students: 'hjs_students',
     adminCredentials: 'hjs_admin_credentials',
+    adminAccounts: 'hjs_admin_accounts',
+    auditLog: 'hjs_audit_log',
     adminSession: 'hjs_admin_session',
     studentSession: 'hjs_student_session'
   };
@@ -96,13 +98,47 @@ const HJSData = (() => {
     };
   }
 
+  function getAdminAccounts() {
+    const saved = read(KEYS.adminAccounts);
+    if (saved && saved.length) return saved;
+    const credentials = getAdminCredentials();
+    const accounts = [{ username: credentials.username, passwordHash: credentials.passwordHash, role: 'owner' }];
+    write(KEYS.adminAccounts, accounts);
+    return accounts;
+  }
+
+  function saveAdminAccounts(accounts) {
+    write(KEYS.adminAccounts, accounts);
+  }
+
   function saveAdminCredentials(username, password) {
     const credentials = {
       username: username.trim(),
       passwordHash: hashValue(password)
     };
     write(KEYS.adminCredentials, credentials);
+    const accounts = getAdminAccounts();
+    const current = accounts[0] || { role: 'owner' };
+    accounts[0] = { ...current, ...credentials };
+    saveAdminAccounts(accounts);
     return credentials;
+  }
+
+  function getAuditLog() {
+    return read(KEYS.auditLog) || [];
+  }
+
+  function recordAudit(action, detail) {
+    const session = getAdminSession();
+    const entries = getAuditLog();
+    entries.unshift({
+      id: generateId('audit'),
+      action,
+      detail,
+      username: session ? session.username : 'System',
+      createdAt: new Date().toLocaleString()
+    });
+    write(KEYS.auditLog, entries.slice(0, 200));
   }
 
   function getAdminSession() {
@@ -212,10 +248,6 @@ const HJSData = (() => {
     write(KEYS.applications, applications);
   }
 
-  function getStudents() {
-    return read(KEYS.students) || [];
-  }
-
   function saveStudents(students) {
     write(KEYS.students, students);
   }
@@ -309,7 +341,11 @@ const HJSData = (() => {
     return { ok: true, student };
   }
 
-  function addJob({ title, organization, description, dates, totalSpots }) {
+  function getStudents() {
+    return read(KEYS.students) || [];
+  }
+
+  function addJob({ title, organization, description, dates, totalSpots, image }) {
     const jobs = getJobs();
     const job = {
       id: generateId('job'),
@@ -319,16 +355,20 @@ const HJSData = (() => {
       dates: dates ? dates.trim() : '04/04/2026 - 14/04/2026',
       totalSpots: parseInt(totalSpots, 10) || 1,
       filledSpots: 0,
-      image: ''
+      image: image ? image.trim() : ''
     };
     jobs.push(job);
     saveJobs(jobs);
+    recordAudit('Job created', title.trim());
     return job;
   }
 
   function removeJob(jobId) {
-    const jobs = getJobs().filter(j => j.id !== jobId);
-    saveJobs(jobs);
+    const jobs = getJobs();
+    const removed = jobs.find(j => j.id === jobId);
+    const remaining = jobs.filter(j => j.id !== jobId);
+    saveJobs(remaining);
+    if (removed) recordAudit('Job removed', removed.title);
   }
 
   function updateJob(jobId, updates) {
@@ -348,6 +388,9 @@ const HJSData = (() => {
     if (updates.dates !== undefined) {
       job.dates = updates.dates.trim();
     }
+    if (updates.image !== undefined) {
+      job.image = updates.image.trim();
+    }
     if (updates.totalSpots !== undefined) {
       const newTotal = parseInt(updates.totalSpots, 10);
       if (Number.isNaN(newTotal) || newTotal < 1) {
@@ -360,6 +403,7 @@ const HJSData = (() => {
     }
 
     saveJobs(jobs);
+    recordAudit('Job updated', job.title);
     return { ok: true, job };
   }
 
@@ -406,6 +450,7 @@ const HJSData = (() => {
     });
 
     saveApplications(applications);
+    recordAudit('Application submitted', `${profile.name} applied for ${job.title}`);
     return { ok: true, message: `Application submitted for ${job.title}!` };
   }
 
@@ -426,6 +471,7 @@ const HJSData = (() => {
 
     saveJobs(jobs);
     saveApplications(applications);
+    recordAudit('Application approved', app.studentName);
     return { ok: true };
   }
 
@@ -438,6 +484,26 @@ const HJSData = (() => {
     app.adminNotes = adminNotes || '';
     app.decidedAt = new Date().toLocaleString();
     saveApplications(applications);
+    recordAudit('Application declined', app.studentName);
+    return { ok: true };
+  }
+
+  function reopenApplication(appId) {
+    const applications = getApplications();
+    const app = applications.find(item => item.id === appId);
+    if (!app || (app.status !== 'approved' && app.status !== 'declined')) {
+      return { ok: false, message: 'Application cannot be reopened.' };
+    }
+    if (app.status === 'approved') {
+      const jobs = getJobs();
+      const job = jobs.find(item => item.id === app.jobId);
+      if (job && job.filledSpots > 0) job.filledSpots -= 1;
+      saveJobs(jobs);
+    }
+    app.status = 'pending';
+    app.decidedAt = null;
+    saveApplications(applications);
+    recordAudit('Application reopened', app.studentName);
     return { ok: true };
   }
 
@@ -469,6 +535,7 @@ const HJSData = (() => {
     saveApplications,
     getStudentProfile,
     saveStudentProfile,
+    getStudents,
     registerStudent,
     loginStudent,
     addJob,
@@ -478,6 +545,7 @@ const HJSData = (() => {
     submitApplication,
     approveApplication,
     declineApplication,
+    reopenApplication,
     getStats,
     getPendingApplications,
     getProcessedApplications,
@@ -489,6 +557,10 @@ const HJSData = (() => {
     clearStudentSession,
     getAdminCredentials,
     saveAdminCredentials,
+    getAdminAccounts,
+    saveAdminAccounts,
+    getAuditLog,
+    recordAudit,
     isSessionValid,
     generateId,
     hashValue,
